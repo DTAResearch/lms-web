@@ -9,7 +9,9 @@ npm i #tải các module cho hệ thống
 
 npm run dev # chạy project môi trường dev
 
-npm start # chạy trên môi trường production
+nmp run build # chạy trên môi trường production
+
+npm start 
 
 First, run the development server:
 
