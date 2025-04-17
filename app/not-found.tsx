@@ -138,7 +138,7 @@ const Not_Found_Page = () => {
                             >
                                 Quay về trang chủ
                             </Link>
-                            <Link href="#" target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-gray-900">
+                            <Link href="/" target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-gray-900">
                                 Liên hệ hỗ trợ <span aria-hidden="true">&rarr;</span>
                             </Link>
                         </div>

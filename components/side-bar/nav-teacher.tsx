@@ -28,15 +28,12 @@ import {
 import {
 	Frame,
 	ChevronRight,
-	Folder,
-	Forward,
 	MoreHorizontal,
-	Trash2,
-	CircleUser,
-	BookMarked,
-	ListCollapse,
-	HardDrive
+	Users,
+	Bot,
+	ChartNoAxesCombined
 } from "lucide-react"
+import { SiGoogleclassroom } from "react-icons/si";
 
 
 const projects = [
@@ -49,9 +46,9 @@ const projects = [
 
 const navAdmin = [
 	{
-		title: "Quản lý tài khoản",
+		title: "Phân tích",
 		url: "#",
-		icon: CircleUser,
+		icon: ChartNoAxesCombined,
 		isActive: false,
 		items: [
 			{
@@ -65,9 +62,9 @@ const navAdmin = [
 		],
 	},
 	{
-		title: "Quản lý khoa",
+		title: "Người dùng",
 		url: "#",
-		icon: BookMarked,
+		icon: Users,
 		items: [
 			{
 				title: "Danh sách",
@@ -80,9 +77,9 @@ const navAdmin = [
 		],
 	},
 	{
-		title: "Quản danh mục văn bản",
+		title: "Trợ lý AI",
 		url: "#",
-		icon: ListCollapse,
+		icon: Bot,
 		items: [
 			{
 				title: "Lĩnh vực",
@@ -99,9 +96,9 @@ const navAdmin = [
 		],
 	},
 	{
-		title: "Thống kê dữ liệu",
+		title: "Lớp học",
 		url: "#",
-		icon: HardDrive,
+		icon: SiGoogleclassroom,
 		items: [
 			{
 				title: "Dash board",

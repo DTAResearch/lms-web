@@ -28,17 +28,11 @@ import {
 import {
 	Frame,
 	ChevronRight,
-	Folder,
-	Forward,
 	MoreHorizontal,
-	Trash2,
-	CircleUser,
-	BookMarked,
-	ListCollapse,
-	HardDrive,
 	ChartNoAxesCombined,
 	Bot,
-	Users
+	Users,
+	GraduationCap
 } from "lucide-react"
 
 
@@ -69,13 +63,13 @@ const navAdmin = [
 		icon: Users,
 		items: [
 			{
-				title: "Thêm mới",
+				title: "Danh sách",
 				url: "#",
 			},
 		],
 	},
 	{
-		title: "Ai",
+		title: "Trợ lý AI",
 		url: "#",
 		icon: Bot,
 		items: [
@@ -86,9 +80,9 @@ const navAdmin = [
 		],
 	},
 	{
-		title: "Thống kê dữ liệu",
+		title: "Kiến thức",
 		url: "#",
-		icon: HardDrive,
+		icon: GraduationCap,
 		items: [
 			{
 				title: "Dash board",

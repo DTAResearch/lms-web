@@ -29,6 +29,7 @@ import { ModeToggle } from "../mode-toggle"
 import { NavAdmin } from "./nav-admin"
 import { NavTeacher } from "./nav-teacher"
 import { NavStudent } from "./nav-student"
+import { useSession } from "next-auth/react"
 
 // This is sample data.
 const data = {
@@ -161,6 +162,11 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data: session } = useSession();
+  const role = session?.user?.role;
+  const isAdmin = role === "admin";
+  const isTeacher = role === "teacher";
+  const isStudent = role === "user";
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -169,9 +175,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         {/* <NavMain items={data.navMain} /> */}
         {/* <NavProjects projects={data.projects} /> */}
-        <NavAdmin />
+        {/* <NavAdmin />
         <NavTeacher />
-        <NavStudent />
+        <NavStudent /> */}
+        {isAdmin && <NavAdmin />}
+        {isTeacher && <NavTeacher />}
+        {isStudent && <NavStudent />}
       </SidebarContent>
       <ModeToggle />
       <SidebarFooter>
