@@ -12,6 +12,10 @@ declare module "next-auth" {
       email?: string | null;
       image?: string | null;
       role?: Role;
+      id?: string | null;
+      backendToken?: string | null; // Add this line
+      loginType?: string | null;
+      avatar?: string | null;
     }
   }
 }

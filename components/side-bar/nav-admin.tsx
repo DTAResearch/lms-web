@@ -34,6 +34,7 @@ import {
 	Users,
 	GraduationCap
 } from "lucide-react"
+import Link from "next/link"
 
 
 const projects = [
@@ -47,7 +48,7 @@ const projects = [
 const navAdmin = [
 	{
 		title: "Phân tích",
-		url: "#",
+		url: "/admin/analysis",
 		icon: ChartNoAxesCombined,
 		isActive: false,
 		items: [
@@ -59,7 +60,7 @@ const navAdmin = [
 	},
 	{
 		title: "Người dùng",
-		url: "#",
+		url: "/admin/users",
 		icon: Users,
 		items: [
 			{
@@ -70,12 +71,12 @@ const navAdmin = [
 	},
 	{
 		title: "Trợ lý AI",
-		url: "#",
+		url: "/admin/assistant-ai",
 		icon: Bot,
 		items: [
 			{
-				title: "Lĩnh vực",
-				url: "/",
+				title: "Danh sách",
+				url: "/admin/assistant-ai",
 			},
 		],
 	},
@@ -109,11 +110,14 @@ export function NavAdmin() {
 					>
 						<SidebarMenuItem>
 							<CollapsibleTrigger asChild>
-								<SidebarMenuButton tooltip={item.title}>
-									{item.icon && <item.icon />}
-									<p className="w-64 overflow-hidden whitespace-nowrap text-ellipsis">{item.title}</p>
-									<ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-								</SidebarMenuButton>
+								<Link href={item.url}>
+									<SidebarMenuButton tooltip={item.title}>
+
+										{item.icon && <item.icon />}
+										<p className="w-64 overflow-hidden whitespace-nowrap text-ellipsis">{item.title}</p>
+										<ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+									</SidebarMenuButton>
+								</Link>
 							</CollapsibleTrigger>
 							<CollapsibleContent>
 								<SidebarMenuSub>

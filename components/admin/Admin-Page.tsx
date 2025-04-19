@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 
 import { useAuth } from "@/hooks/useAuth";
 import { Role } from "@/constants/Role";
-import LogoutButton from "@/components/auth/LogoutButton";
+import LogoutButton from "@/components/auth/logout-button";
 import { useSession } from "next-auth/react";
 
 
@@ -31,19 +31,10 @@ export const AdminPage = () => {
 
     return (
         <div>
-            <Button variant="outline" className="mb-4" >
-                Admin Page
-            </Button>
-
-
-            {/* Main Content */}
-            <div className="ml-[200px] w-[calc(100%-200px)]">
-                <main className="flex-col w-full p-4 overflow-y-auto h-fit">
-                    <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
-                    <p>Welcome, {session?.user?.name}!</p>
-                </main>
-            </div>
-
+            <main className="flex-col w-full p-4 overflow-y-auto h-fit">
+                <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
+                <p>Welcome, {session?.user?.name}!</p>
+            </main>
         </div >
     )
 }

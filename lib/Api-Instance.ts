@@ -14,6 +14,8 @@ declare module "next-auth" {
       email?: string | null;
       image?: string | null;
       accessToken?: string;
+      backendToken?: string | null; // Add this line
+      loginType?: string | null;
       role?: Role;
     }
   }
@@ -23,7 +25,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
-  withCredentials: true, // ✅ Thêm dòng này
+  withCredentials: true,
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
     'Content-Type': 'application/json',
@@ -44,24 +46,24 @@ const axiosInstance = axios.create({
 //   }
 // );
 
-// // Xử lý lỗi từ API
-// axiosInstance.interceptors.response.use(
-//   (response) => {
-//     return response;
-//   },
-//   async (error) => {
-//     const originalRequest = error.config;
-    
-//     // Nếu token hết hạn (401), đăng xuất người dùng
-//     if (error.response?.status === 401 && !originalRequest._retry) {
-//       originalRequest._retry = true;
-//       await signOut({ redirect: false });
-//       window.location.href = "/auth/login";
-//       return Promise.reject(error);
-//     }
-    
-//     return Promise.reject(error);
-//   }
-// );
+// Xử lý lỗi từ API
+axiosInstance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    const originalRequest = error.config;
+
+    // Nếu token hết hạn (401), đăng xuất người dùng
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      await signOut({ redirect: false });
+      window.location.href = "/auth/login";
+      return Promise.reject(error);
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export default axiosInstance;

@@ -162,7 +162,7 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { data: session } = useSession();
+  const { data: session } =  useSession();
   const role = session?.user?.role;
   const isAdmin = role === "admin";
   const isTeacher = role === "teacher";

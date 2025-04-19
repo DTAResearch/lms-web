@@ -29,7 +29,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import LogoutButton from "../auth/LogoutButton"
+import LogoutButton from "../auth/logout-button"
 import { useSession } from "next-auth/react"
 
 export function NavUser({
@@ -53,8 +53,8 @@ export function NavUser({
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={session?.user?.image || undefined} alt={session?.user?.name || undefined} />
+              <Avatar className="h-8 w-8 rounded-full">
+                <AvatarImage src={session?.user?.image || ""} alt={session?.user?.name || ""} />
                 <AvatarFallback className="rounded-lg">{session?.user?.name?.charAt(0)}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -72,13 +72,13 @@ export function NavUser({
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
+                <Avatar className="h-8 w-8 rounded-full">
+                  <AvatarImage src={session?.user?.image || ""} alt={session?.user?.name || ""} />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-medium">{session?.user?.name}</span>
+                  <span className="truncate text-xs">{session?.user?.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
@@ -101,14 +101,14 @@ export function NavUser({
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />
-                Notifications
+                Thông báo
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <LogoutButton className="w-full flex items-center cursor-pointer" >
                 <LogOut className="me-2" />
-                Log out
+                Đăng xuất
               </LogoutButton>
             </DropdownMenuItem>
           </DropdownMenuContent>

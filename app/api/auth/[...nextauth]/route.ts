@@ -37,7 +37,7 @@ export const authOptions: NextAuthOptions = {
                     headers: { "X-Requested-With": "XMLHttpRequest" }
                 });
 
-                console.log("response", response.data);
+                // console.log("response", response.data);
 
                 return true;
             } catch (error) {
@@ -74,35 +74,37 @@ export const authOptions: NextAuthOptions = {
         async jwt({ token, user, account }) {
             if (account && user) {
                 try {
-                    // Step 1: First verify the Google token with backend
+                    // Step 1: Verify the Google token with backend and get token
                     const verifyResponse = await axios.post(`${API_BASE_URL}/auth/google/verify-id-token`, {
                         id_token: account.id_token,
                     }, {
                         headers: { "X-Requested-With": "XMLHttpRequest" },
-                        withCredentials: true // Important to accept cookies from response
+                        withCredentials: true
                     });
-
-                    console.log(account)
-                    const cookies = verifyResponse.headers['set-cookie'] || [];
-                    const cookieHeader = cookies.join('; ');
-
-                    // Step 2: Then use cookies set by the backend to fetch user data
+                    
+                    // console.log("Backend token response:", verifyResponse.data);
+                    
+                    // Extract token from response
+                    const backendToken = verifyResponse.data.token;
+                    // console.log("Backend token:", backendToken);
+                    
+                    // Step 2: Use the token for /users/me
                     const me = await axios.get(`${API_BASE_URL}/users/me`, {
                         headers: {
-                            "Authorization": `Bearer ${account.id_token}`,
+                            "Authorization": `Bearer ${backendToken}`,
                             "X-Requested-With": "XMLHttpRequest",
-                            "Cookie": cookieHeader // Pass cookies from previous response
+                            "Cookie": `access_token=${backendToken}` // Include the session token in the request
                         },
                         withCredentials: true
                     });
 
-                    console.log("me", me.data);
-
+                    console.log("User data retrieved successfully");
                     const userData = me.data;
 
                     return {
                         ...token,
-                        accessToken: account.id_token,
+                        accessToken: account.id_token,    // Google token
+                        backendToken: backendToken,       // Your backend token
                         role: userData.role,
                         userId: userData.id || userData.email,
                         avatar: userData.avatar,
@@ -111,14 +113,12 @@ export const authOptions: NextAuthOptions = {
                     };
                 } catch (err) {
                     console.error("Lỗi khi lấy user từ backend:", err);
-                    // Return existing token on error
                     return token;
                 }
             }
 
             return token;
         },
-
 
         async session({ session, token }) {
             return {
@@ -129,12 +129,11 @@ export const authOptions: NextAuthOptions = {
                     role: token.role,
                     avatar: token.avatar,
                     loginType: token.loginType,
-                    accessToken: token.accessToken,
+                    backendToken: token.backendToken,  // Include this for client API calls
                     email: token.email,
                 }
             };
         }
-
     },
     pages: {
         signIn: '/auth/login',
@@ -142,6 +141,17 @@ export const authOptions: NextAuthOptions = {
     },
     session: {
         strategy: 'jwt',
+    },
+    cookies: {
+        sessionToken: {
+            name: "next-auth.session-token", // Use a different name from your backend cookie
+            options: {
+                httpOnly: true,
+                sameSite: "lax",
+                path: "/",
+                secure: process.env.NODE_ENV === "production",
+            },
+        },
     },
 };
 
