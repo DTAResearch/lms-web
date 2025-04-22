@@ -145,9 +145,6 @@ const Not_Found_Page = () => {
                     </div>
                 </div>
             </div>
-
-
-
         </main>
     )
 };

@@ -1,7 +1,9 @@
+import Models from "@/components/admin/Assistant-Ai-Page";
+
 const Page = () => {
   return(
       <div>
-          Trợ lý AI
+          <Models />
       </div>
   )
 }

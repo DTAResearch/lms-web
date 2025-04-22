@@ -34,6 +34,7 @@ import {
 	Users,
 	GraduationCap
 } from "lucide-react"
+import { SiGoogleclassroom } from "react-icons/si";
 import Link from "next/link"
 
 
@@ -77,6 +78,17 @@ const navAdmin = [
 			{
 				title: "Danh sách",
 				url: "/admin/assistant-ai",
+			},
+		],
+	},
+	{
+		title: "Lớp học",
+		url: "/admin/classroom",
+		icon: SiGoogleclassroom,
+		items: [
+			{
+				title: "Danh sách",
+				url: "/admin/classroom",
 			},
 		],
 	},

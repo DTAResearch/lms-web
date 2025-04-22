@@ -1,26 +1,22 @@
 // src/app/api/iframe/generate_iframe_url/route.ts
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOptions";
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
+import { useSession } from "next-auth/react";
+import { API_BASE_URL } from "@/constants/URL";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const { data: session } =  useSession();
     
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     
     // Gọi API backend để lấy URL iframe
-    const response = await axios.get(`${API_BASE_URL}/iframe/generate_iframe_url`, {
-      headers: {
-        Authorization: `Bearer ${session.user.accessToken}`,
-        "X-Requested-With": "XMLHttpRequest",
-      },
-    });
+    const response = await axios.get(`${API_BASE_URL}/iframe/generate_iframe_url`);
     
     return NextResponse.json({ data: response.data.data });
   } catch (error: any) {

@@ -5,6 +5,7 @@ import axios from "axios";
 import { getSession, signOut } from "next-auth/react";
 import "next-auth";
 import { Role } from "@/constants/Role";
+import { URL_LOGIN } from "@/constants/URL";
 
 // Extend the Session type to include accessToken
 declare module "next-auth" {
@@ -58,7 +59,7 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       await signOut({ redirect: false });
-      window.location.href = "/auth/login";
+      window.location.href = URL_LOGIN;
       return Promise.reject(error);
     }
 

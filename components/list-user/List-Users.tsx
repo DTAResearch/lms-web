@@ -28,6 +28,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select"
+import { Loading } from "../loading";
 
 
 
@@ -47,11 +48,11 @@ interface UserListProps {
 	isTeacherList?: boolean;
 }
 
-const ListUsers: React.FC<UserListProps> = ({
+const ListUsers = ({
 	groupId,
 	isInGroupView = false,
 	isTeacherList = false
-}) => {
+}: UserListProps) => {
 	// Auth
 	const { data: session, status } = useSession();
 
@@ -80,12 +81,6 @@ const ListUsers: React.FC<UserListProps> = ({
 			const response = await axiosInstance.patch(
 				`${API_BASE_URL}/users/update-role/${userId}`,
 				payload,
-				{
-					headers: {
-						Authorization: `Bearer ${session?.user?.backendToken}`,
-						"X-Requested-With": "XMLHttpRequest"
-					}
-				}
 			);
 
 			if (response.status === 200) {
@@ -148,11 +143,7 @@ const ListUsers: React.FC<UserListProps> = ({
 		try {
 			setLoading(true);
 			const response = await axiosInstance.get(url, {
-				params,
-				headers: {
-					Authorization: `Bearer ${session?.user?.backendToken}`,
-					"X-Requested-With": "XMLHttpRequest"
-				}
+				params
 			});
 
 			if (response.status === 200) {
@@ -258,9 +249,7 @@ const ListUsers: React.FC<UserListProps> = ({
 
 				{/* Loading indicator */}
 				{loading && (
-					<div className="absolute inset-0 bg-white/50 dark:bg-gray-800/50 flex items-center justify-center z-10">
-						<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-500 dark:border-sky-400"></div>
-					</div>
+					<Loading />
 				)}
 
 				{/* Table with users */}

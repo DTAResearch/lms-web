@@ -6,6 +6,7 @@ import { Button } from "../ui/button"
 import { LoaderCircle } from "lucide-react";
 import { API_BASE_URL } from "@/constants/URL";
 import axiosInstance from "@/lib/Api-Instance";
+import { Loading } from "../loading";
 
 
 export const AnalysisPage = () => {
@@ -35,10 +36,7 @@ export const AnalysisPage = () => {
                     className="w-full h-full"
                 />
             ) : (
-                <div className="space-y-2 w-full h-full flex flex-col items-center justify-center">
-                    <p>Đang tải dữ liệu...</p>
-                    <LoaderCircle className="animate-spin" />
-                </div>
+                <Loading />
             )}
         </div>
     );

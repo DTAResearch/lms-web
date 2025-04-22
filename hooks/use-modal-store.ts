@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type ModalType = "createDepartment";
+export type ModalType = "createAssistant";
 
 interface ModalStore {
     type: ModalType | null;

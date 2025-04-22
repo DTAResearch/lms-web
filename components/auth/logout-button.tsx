@@ -17,7 +17,7 @@ export default function LogoutButton({ className, children }: LogoutButtonProps)
   
   const handleLogout = async () => {
   
-    // await axiosInstance.post(`${API_BASE_URL}/logout`)
+    await axiosInstance.post(`${API_BASE_URL}/users/logout`)
     await signOut({ redirect: true, callbackUrl: "/" });
     // Chuyển hướng đến trang đăng nhập sau khi đăng xuất
     router.push("/");
