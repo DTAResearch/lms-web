@@ -1,13 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { Button } from "../ui/button"
-import { LoaderCircle } from "lucide-react";
 import { API_BASE_URL } from "@/constants/URL";
 import axiosInstance from "@/lib/Api-Instance";
 import { Loading } from "../loading";
-
+import { toast } from "sonner";
 
 export const AnalysisPage = () => {
 
@@ -20,7 +17,7 @@ export const AnalysisPage = () => {
                 const response = await axiosInstance.get(`${API_BASE_URL}/iframe/dashboard`)
                 setIframeUrl(response.data.data);
             } catch (error) {
-                console.error("Error loading dashboard:", error);
+                toast.error("Lỗi khi tải dashboard: " + error);
             }
         };
 

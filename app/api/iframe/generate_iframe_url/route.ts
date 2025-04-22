@@ -1,10 +1,8 @@
 // src/app/api/iframe/generate_iframe_url/route.ts
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOptions";
 import { NextRequest, NextResponse } from "next/server";
-import axios from "axios";
 import { useSession } from "next-auth/react";
 import { API_BASE_URL } from "@/constants/URL";
+import axiosInstance from "@/lib/Api-Instance";
 
 
 export async function GET(request: NextRequest) {
@@ -16,7 +14,7 @@ export async function GET(request: NextRequest) {
     }
     
     // Gọi API backend để lấy URL iframe
-    const response = await axios.get(`${API_BASE_URL}/iframe/generate_iframe_url`);
+    const response = await axiosInstance.get(`${API_BASE_URL}/iframe/generate_iframe_url`);
     
     return NextResponse.json({ data: response.data.data });
   } catch (error: any) {

@@ -357,528 +357,530 @@ export const CreateAssistant = () => {
                                     <TabsTrigger value="advanced">Cấu hình nâng cao</TabsTrigger>
                                 </TabsList>
 
-                                <TabsContent value="basic" className="space-y-4">
-                                    {/* Basic information tab */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="min-h-[520px]"> {/* Chiều cao cố định cho tất cả tab content */}
+                                    <TabsContent value="basic" className="space-y-4 mt-0">
+                                        {/* Basic information tab */}
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <FormField
+                                                control={form.control}
+                                                name="name"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="font-medium text-gray-700 dark:text-gray-300">Tên mô hình</FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                {...field}
+                                                                placeholder="Nhập tên mô hình"
+                                                                className="bg-white dark:bg-gray-700"
+                                                                disabled={isLoading}
+                                                            />
+                                                        </FormControl>
+                                                        <FormDescription className="text-xs text-gray-500 dark:text-gray-400">
+                                                            Đây là tên hiển thị cho mô hình của bạn
+                                                        </FormDescription>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <FormField
+                                                control={form.control}
+                                                name="modelId"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="font-medium text-gray-700 dark:text-gray-300">ID mô hình</FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                {...field}
+                                                                placeholder="model-id"
+                                                                className="bg-gray-50 dark:bg-gray-700"
+                                                                //   disabled={isEditing || isLoading}
+                                                                disabled={true}
+                                                            />
+                                                        </FormControl>
+                                                        <FormDescription className="text-xs text-gray-500 dark:text-gray-400">
+                                                            Định danh duy nhất cho mô hình của bạn
+                                                        </FormDescription>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+
                                         <FormField
                                             control={form.control}
-                                            name="name"
+                                            name="baseModelId"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel className="font-medium text-gray-700 dark:text-gray-300">Tên mô hình</FormLabel>
+                                                    <FormLabel className="font-medium text-gray-700 dark:text-gray-300">Mô hình cơ sở</FormLabel>
+                                                    <Select
+                                                        onValueChange={field.onChange}
+                                                        defaultValue={field.value}
+                                                        value={field.value}
+                                                        disabled={isLoading}
+                                                    >
+                                                        <FormControl>
+                                                            <SelectTrigger className="bg-white dark:bg-gray-700">
+                                                                <SelectValue placeholder="Chọn mô hình cơ sở" />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            {baseModels.map((model) => (
+                                                                <SelectItem key={model} value={model}>
+                                                                    {model}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormDescription className="text-xs text-gray-500 dark:text-gray-400">
+                                                        Mô hình AI cơ sở được sử dụng
+                                                    </FormDescription>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+
+                                        <FormField
+                                            control={form.control}
+                                            name="description"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className="font-medium text-gray-700 dark:text-gray-300">Mô tả</FormLabel>
+                                                    <FormControl>
+                                                        <Textarea
+                                                            {...field}
+                                                            placeholder="Nhập mô tả về mô hình của bạn"
+                                                            className="!max-h-[30px] bg-white dark:bg-gray-700 resize-none"
+                                                            disabled={isLoading}
+                                                        />
+                                                    </FormControl>
+                                                    <FormDescription className="text-xs text-gray-500 dark:text-gray-400">
+                                                        Mô tả ngắn gọn về mục đích và khả năng của mô hình
+                                                    </FormDescription>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+
+                                        <FormField
+                                            control={form.control}
+                                            name="imageUrl"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className="font-medium text-gray-700 dark:text-gray-300">URL hình ảnh</FormLabel>
                                                     <FormControl>
                                                         <Input
                                                             {...field}
-                                                            placeholder="Nhập tên mô hình"
+                                                            placeholder="https://example.com/image.png"
                                                             className="bg-white dark:bg-gray-700"
                                                             disabled={isLoading}
                                                         />
                                                     </FormControl>
                                                     <FormDescription className="text-xs text-gray-500 dark:text-gray-400">
-                                                        Đây là tên hiển thị cho mô hình của bạn
+                                                        URL hình ảnh đại diện cho mô hình của bạn
                                                     </FormDescription>
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
                                         />
+                                    </TabsContent>
 
+                                    <TabsContent value="permissions" className="space-y-4 mt-0">
+                                        {/* Permissions tab */}
                                         <FormField
                                             control={form.control}
-                                            name="modelId"
+                                            name="visibility"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel className="font-medium text-gray-700 dark:text-gray-300">ID mô hình</FormLabel>
-                                                    <FormControl>
-                                                        <Input
-                                                            {...field}
-                                                            placeholder="model-id"
-                                                            className="bg-gray-50 dark:bg-gray-700"
-                                                            //   disabled={isEditing || isLoading}
-                                                            disabled={true}
-                                                        />
-                                                    </FormControl>
+                                                    <FormLabel className="font-medium text-gray-700 dark:text-gray-300">Phạm vi truy cập</FormLabel>
+                                                    <Select
+                                                        onValueChange={field.onChange}
+                                                        defaultValue={field.value}
+                                                        value={field.value}
+                                                        disabled={isLoading}
+                                                    >
+                                                        <FormControl>
+                                                            <SelectTrigger className="bg-white dark:bg-gray-700">
+                                                                <SelectValue placeholder="Chọn phạm vi truy cập" />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            <SelectItem value="PUBLIC">Công khai</SelectItem>
+                                                            <SelectItem value="PRIVATE">Giới hạn</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
                                                     <FormDescription className="text-xs text-gray-500 dark:text-gray-400">
-                                                        Định danh duy nhất cho mô hình của bạn
+                                                        Xác định ai có thể truy cập mô hình này
                                                     </FormDescription>
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
                                         />
-                                    </div>
 
-                                    <FormField
-                                        control={form.control}
-                                        name="baseModelId"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className="font-medium text-gray-700 dark:text-gray-300">Mô hình cơ sở</FormLabel>
-                                                <Select
-                                                    onValueChange={field.onChange}
-                                                    defaultValue={field.value}
-                                                    value={field.value}
-                                                    disabled={isLoading}
-                                                >
-                                                    <FormControl>
-                                                        <SelectTrigger className="bg-white dark:bg-gray-700">
-                                                            <SelectValue placeholder="Chọn mô hình cơ sở" />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        {baseModels.map((model) => (
-                                                            <SelectItem key={model} value={model}>
-                                                                {model}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormDescription className="text-xs text-gray-500 dark:text-gray-400">
-                                                    Mô hình AI cơ sở được sử dụng
-                                                </FormDescription>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
+                                        {form.watch("visibility") === "PRIVATE" && (
+                                            <div className="space-y-4 border rounded-lg p-4 dark:border-gray-700">
+                                                <div>
+                                                    <div className="flex justify-between items-center mb-2">
+                                                        <h4 className="font-medium text-sm text-gray-700 dark:text-gray-300">
+                                                            Nhóm người dùng có quyền truy cập
+                                                        </h4>
+                                                        <Badge variant="outline" className="text-xs">
+                                                            {selectedGroups.length} đã chọn
+                                                        </Badge>
+                                                    </div>
 
-                                    <FormField
-                                        control={form.control}
-                                        name="description"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className="font-medium text-gray-700 dark:text-gray-300">Mô tả</FormLabel>
-                                                <FormControl>
-                                                    <Textarea
-                                                        {...field}
-                                                        placeholder="Nhập mô tả về mô hình của bạn"
-                                                        className="min-h-[80px] bg-white dark:bg-gray-700 resize-none"
-                                                        disabled={isLoading}
-                                                    />
-                                                </FormControl>
-                                                <FormDescription className="text-xs text-gray-500 dark:text-gray-400">
-                                                    Mô tả ngắn gọn về mục đích và khả năng của mô hình
-                                                </FormDescription>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <FormField
-                                        control={form.control}
-                                        name="imageUrl"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className="font-medium text-gray-700 dark:text-gray-300">URL hình ảnh</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        {...field}
-                                                        placeholder="https://example.com/image.png"
-                                                        className="bg-white dark:bg-gray-700"
-                                                        disabled={isLoading}
-                                                    />
-                                                </FormControl>
-                                                <FormDescription className="text-xs text-gray-500 dark:text-gray-400">
-                                                    URL hình ảnh đại diện cho mô hình của bạn
-                                                </FormDescription>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </TabsContent>
-
-                                <TabsContent value="permissions" className="space-y-4">
-                                    {/* Permissions tab */}
-                                    <FormField
-                                        control={form.control}
-                                        name="visibility"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className="font-medium text-gray-700 dark:text-gray-300">Phạm vi truy cập</FormLabel>
-                                                <Select
-                                                    onValueChange={field.onChange}
-                                                    defaultValue={field.value}
-                                                    value={field.value}
-                                                    disabled={isLoading}
-                                                >
-                                                    <FormControl>
-                                                        <SelectTrigger className="bg-white dark:bg-gray-700">
-                                                            <SelectValue placeholder="Chọn phạm vi truy cập" />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        <SelectItem value="PUBLIC">Công khai</SelectItem>
-                                                        <SelectItem value="PRIVATE">Giới hạn</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormDescription className="text-xs text-gray-500 dark:text-gray-400">
-                                                    Xác định ai có thể truy cập mô hình này
-                                                </FormDescription>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    {form.watch("visibility") === "PRIVATE" && (
-                                        <div className="space-y-4 border rounded-lg p-4 dark:border-gray-700">
-                                            <div>
-                                                <div className="flex justify-between items-center mb-2">
-                                                    <h4 className="font-medium text-sm text-gray-700 dark:text-gray-300">
-                                                        Nhóm người dùng có quyền truy cập
-                                                    </h4>
-                                                    <Badge variant="outline" className="text-xs">
-                                                        {selectedGroups.length} đã chọn
-                                                    </Badge>
-                                                </div>
-
-                                                <div className="relative">
-                                                    <Popover modal={true}>
-                                                        <PopoverTrigger asChild>
-                                                            <Button
-                                                                variant="outline"
-                                                                className="w-full justify-between bg-white dark:bg-gray-700 text-left font-normal"
-                                                                disabled={isLoading}
+                                                    <div className="relative">
+                                                        <Popover modal={true}>
+                                                            <PopoverTrigger asChild>
+                                                                <Button
+                                                                    variant="outline"
+                                                                    className="w-full justify-between bg-white dark:bg-gray-700 text-left font-normal"
+                                                                    disabled={isLoading}
+                                                                >
+                                                                    <div className="flex items-center">
+                                                                        <span>
+                                                                            {selectedGroups.length > 0
+                                                                                ? `${selectedGroups.length} nhóm đã chọn`
+                                                                                : "Chọn nhóm người dùng"}
+                                                                        </span>
+                                                                        {selectedGroups.length > 0 && (
+                                                                            <Badge className="ml-2 bg-sky-500 text-white dark:bg-sky-600 hover:bg-sky-600 dark:hover:bg-sky-700">
+                                                                                {selectedGroups.length}
+                                                                            </Badge>
+                                                                        )}
+                                                                    </div>
+                                                                    <Info className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                                </Button>
+                                                            </PopoverTrigger>
+                                                            <PopoverContent
+                                                                className="w-full p-0"
+                                                                align="start"
+                                                                side="bottom"
+                                                                sideOffset={4}
+                                                                forceMount
+                                                                style={{ zIndex: 9999, position: "relative" }}
                                                             >
-                                                                <div className="flex items-center">
-                                                                    <span>
-                                                                        {selectedGroups.length > 0
-                                                                            ? `${selectedGroups.length} nhóm đã chọn`
-                                                                            : "Chọn nhóm người dùng"}
-                                                                    </span>
-                                                                    {selectedGroups.length > 0 && (
-                                                                        <Badge className="ml-2 bg-sky-500 text-white dark:bg-sky-600 hover:bg-sky-600 dark:hover:bg-sky-700">
-                                                                            {selectedGroups.length}
-                                                                        </Badge>
-                                                                    )}
-                                                                </div>
-                                                                <Info className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                            </Button>
-                                                        </PopoverTrigger>
-                                                        <PopoverContent
-                                                            className="w-full p-0"
-                                                            align="start"
-                                                            side="bottom"
-                                                            sideOffset={4}
-                                                            forceMount
-                                                            style={{ zIndex: 9999, position: "relative" }}
-                                                        >
-                                                            {/* <div className="p-2 border-b dark:border-gray-600">
+                                                                {/* <div className="p-2 border-b dark:border-gray-600">
                                 <p className="text-sm text-gray-500 dark:text-gray-400">
                                   Chọn một hoặc nhiều nhóm người dùng
                                 </p>
                               </div> */}
-                                                            <Command>
-                                                                {/* <CommandInput placeholder="Tìm nhóm..." className="h-9" /> */}
-                                                                <CommandList className="max-h-[300px] overflow-auto">
-                                                                    <CommandEmpty>Không tìm thấy nhóm nào</CommandEmpty>
-                                                                    <CommandGroup heading="Nhóm người dùng">
-                                                                        {groups.map((group) => {
-                                                                            const isSelected = selectedGroups.includes(group.id);
-                                                                            return (
-                                                                                <CommandItem
-                                                                                    key={group.id}
-                                                                                    onSelect={() => {
-                                                                                        if (isSelected) {
-                                                                                            setSelectedGroups(selectedGroups.filter(id => id !== group.id));
-                                                                                        } else {
-                                                                                            setSelectedGroups([...selectedGroups, group.id]);
-                                                                                        }
-                                                                                    }}
-                                                                                    className="flex items-center justify-between py-2"
-                                                                                >
-                                                                                    <div className="flex items-center">
-                                                                                        <div className={cn(
-                                                                                            "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                                                                                            isSelected ? "bg-primary text-primary-foreground" : "opacity-50"
-                                                                                        )}>
-                                                                                            {isSelected && <CheckIcon className="h-3 w-3" />}
+                                                                <Command>
+                                                                    {/* <CommandInput placeholder="Tìm nhóm..." className="h-9" /> */}
+                                                                    <CommandList className="max-h-[300px] overflow-auto">
+                                                                        <CommandEmpty>Không tìm thấy nhóm nào</CommandEmpty>
+                                                                        <CommandGroup heading="Nhóm người dùng">
+                                                                            {groups.map((group) => {
+                                                                                const isSelected = selectedGroups.includes(group.id);
+                                                                                return (
+                                                                                    <CommandItem
+                                                                                        key={group.id}
+                                                                                        onSelect={() => {
+                                                                                            if (isSelected) {
+                                                                                                setSelectedGroups(selectedGroups.filter(id => id !== group.id));
+                                                                                            } else {
+                                                                                                setSelectedGroups([...selectedGroups, group.id]);
+                                                                                            }
+                                                                                        }}
+                                                                                        className="flex items-center justify-between py-2"
+                                                                                    >
+                                                                                        <div className="flex items-center">
+                                                                                            <div className={cn(
+                                                                                                "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                                                                                                isSelected ? "bg-primary text-primary-foreground" : "opacity-50"
+                                                                                            )}>
+                                                                                                {isSelected && <CheckIcon className="h-3 w-3" />}
+                                                                                            </div>
+                                                                                            <span>{group.name}</span>
                                                                                         </div>
-                                                                                        <span>{group.name}</span>
-                                                                                    </div>
-                                                                                    {isSelected && (
-                                                                                        <Badge variant="secondary" className="ml-auto">
-                                                                                            Đã chọn
-                                                                                        </Badge>
-                                                                                    )}
-                                                                                </CommandItem>
-                                                                            );
-                                                                        })}
-                                                                    </CommandGroup>
-                                                                </CommandList>
-                                                                <div className="p-2 border-t flex justify-between items-center dark:border-gray-600">
-                                                                    <span className="text-sm text-gray-500 dark:text-gray-400">
-                                                                        {selectedGroups.length} nhóm đã chọn
-                                                                    </span>
-                                                                    <Button
-                                                                        variant="ghost"
-                                                                        size="sm"
-                                                                        onClick={() => setSelectedGroups([])}
-                                                                        disabled={selectedGroups.length === 0}
-                                                                        className="text-xs"
-                                                                    >
-                                                                        Bỏ chọn tất cả
-                                                                    </Button>
-                                                                </div>
-                                                            </Command>
-                                                        </PopoverContent>
-                                                    </Popover>
-                                                </div>
-
-                                                {selectedGroups.length > 0 && (
-                                                    <div className="flex flex-wrap gap-2 mt-3 max-h-[120px] overflow-y-auto p-2 border rounded-md dark:border-gray-600">
-                                                        {selectedGroups.map(groupId => {
-                                                            const group = groups.find(g => g.id === groupId);
-                                                            return group ? (
-                                                                <Badge
-                                                                    key={groupId}
-                                                                    variant="secondary"
-                                                                    className="px-2 py-1 text-xs flex items-center gap-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
-                                                                >
-                                                                    {group.name}
-                                                                    <button
-                                                                        type="button"
-                                                                        className="ml-1 rounded-full hover:bg-gray-300 dark:hover:bg-gray-500 p-0.5 focus:outline-none"
-                                                                        onClick={(e) => {
-                                                                            e.stopPropagation(); // Stop event from bubbling
-                                                                            e.preventDefault(); // Prevent default behavior
-                                                                            setSelectedGroups(selectedGroups.filter(id => id !== groupId));
-                                                                        }}
-                                                                    >
-                                                                        <X className="h-3 w-3" />
-                                                                    </button>
-                                                                </Badge>
-                                                            ) : null;
-                                                        })}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    )}
-                                </TabsContent>
-
-                                <TabsContent value="advanced" className="space-y-4">
-                                    {/* Advanced tab */}
-                                    <FormField
-                                        control={form.control}
-                                        name="systemPrompt"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className="font-medium text-gray-700 dark:text-gray-300">System Prompt</FormLabel>
-                                                <FormControl>
-                                                    <Textarea
-                                                        {...field}
-                                                        placeholder="Nhập system prompt cho mô hình AI của bạn"
-                                                        className="min-h-[150px] bg-white dark:bg-gray-700"
-                                                        disabled={isLoading}
-                                                    />
-                                                </FormControl>
-                                                <FormDescription className="text-xs text-gray-500 dark:text-gray-400">
-                                                    Hướng dẫn hệ thống cho mô hình AI của bạn
-                                                </FormDescription>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <div className="space-y-4 border rounded-lg p-4 dark:border-gray-700">
-                                        <div className="flex justify-between items-center">
-                                            <h4 className="font-medium text-gray-700 dark:text-gray-300">Kho kiến thức liên kết</h4>
-                                            <Badge variant="outline" className="text-xs">
-                                                {selectedKnowledge.length} đã chọn
-                                            </Badge>
-                                        </div>
-
-                                        <div className="relative">
-                                            <Popover modal={true}>
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        variant="outline"
-                                                        className="w-full justify-between bg-white dark:bg-gray-700 text-left font-normal"
-                                                        disabled={isLoading}
-                                                    >
-                                                        <div className="flex items-center">
-                                                            <span>
-                                                                {selectedKnowledge.length > 0
-                                                                    ? `${selectedKnowledge.length} kho kiến thức đã chọn`
-                                                                    : "Chọn kho kiến thức"}
-                                                            </span>
-                                                            {selectedKnowledge.length > 0 && (
-                                                                <Badge className="ml-2 bg-sky-500 text-white dark:bg-emerald-600 hover:bg-emerald-600 dark:hover:bg-emerald-700">
-                                                                    {selectedKnowledge.length}
-                                                                </Badge>
-                                                            )}
-                                                        </div>
-                                                        <Info className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                    </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent
-                                                    className="w-full p-0"
-                                                    align="start"
-                                                    side="bottom"
-                                                    sideOffset={4}
-                                                    forceMount
-
-                                                >
-                                                    <div className="p-2 border-b dark:border-gray-600">
-                                                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                                                            Chọn một hoặc nhiều kho kiến thức để liên kết với mô hình
-                                                        </p>
-                                                    </div>
-                                                    <Command className="w-full">
-                                                        <CommandInput placeholder="Tìm kho kiến thức..." className="h-9" />
-                                                        <CommandList className="max-h-[300px] overflow-auto">
-                                                            <CommandEmpty>Không tìm thấy kho kiến thức nào</CommandEmpty>
-                                                            <CommandGroup heading="Kho kiến thức">
-                                                                {knowledgeBases.map((kb) => {
-                                                                    const isSelected = selectedKnowledge.includes(kb.id);
-                                                                    return (
-                                                                        <CommandItem
-                                                                            key={kb.id}
-                                                                            onSelect={() => {
-                                                                                if (isSelected) {
-                                                                                    setSelectedKnowledge(selectedKnowledge.filter(id => id !== kb.id));
-                                                                                } else {
-                                                                                    setSelectedKnowledge([...selectedKnowledge, kb.id]);
-                                                                                }
-                                                                            }}
-                                                                            className="flex items-center justify-between py-2"
+                                                                                        {isSelected && (
+                                                                                            <Badge variant="secondary" className="ml-auto">
+                                                                                                Đã chọn
+                                                                                            </Badge>
+                                                                                        )}
+                                                                                    </CommandItem>
+                                                                                );
+                                                                            })}
+                                                                        </CommandGroup>
+                                                                    </CommandList>
+                                                                    <div className="p-2 border-t flex justify-between items-center dark:border-gray-600">
+                                                                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                                                                            {selectedGroups.length} nhóm đã chọn
+                                                                        </span>
+                                                                        <Button
+                                                                            variant="ghost"
+                                                                            size="sm"
+                                                                            onClick={() => setSelectedGroups([])}
+                                                                            disabled={selectedGroups.length === 0}
+                                                                            className="text-xs"
                                                                         >
-                                                                            <div className="flex items-center">
-                                                                                <div className={cn(
-                                                                                    "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                                                                                    isSelected ? "bg-primary text-primary-foreground" : "opacity-50"
-                                                                                )}>
-                                                                                    {isSelected && <CheckIcon className="h-3 w-3" />}
-                                                                                </div>
-                                                                                <span>{kb.name}</span>
-                                                                            </div>
-                                                                            {isSelected && (
-                                                                                <Badge variant="secondary" className="ml-auto">
-                                                                                    Đã chọn
-                                                                                </Badge>
-                                                                            )}
-                                                                        </CommandItem>
-                                                                    );
-                                                                })}
-                                                            </CommandGroup>
-                                                        </CommandList>
-                                                        <div className="p-2 border-t flex justify-between items-center dark:border-gray-600">
-                                                            <span className="text-sm text-gray-500 dark:text-gray-400">
-                                                                {selectedKnowledge.length} kho kiến thức đã chọn
-                                                            </span>
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="sm"
-                                                                onClick={() => setSelectedKnowledge([])}
-                                                                disabled={selectedKnowledge.length === 0}
-                                                                className="text-xs"
-                                                            >
-                                                                Bỏ chọn tất cả
-                                                            </Button>
-                                                        </div>
-                                                    </Command>
-                                                </PopoverContent>
-                                            </Popover>
-                                        </div>
+                                                                            Bỏ chọn tất cả
+                                                                        </Button>
+                                                                    </div>
+                                                                </Command>
+                                                            </PopoverContent>
+                                                        </Popover>
+                                                    </div>
 
-                                        {selectedKnowledge.length > 0 && (
-                                            <div className="flex flex-wrap gap-2 mt-3 max-h-[120px] overflow-y-auto p-2 border rounded-md dark:border-gray-600">
-                                                {selectedKnowledge.map(kbId => {
-                                                    const kb = knowledgeBases.find(k => k.id === kbId);
-                                                    return kb ? (
-                                                        <Badge
-                                                            key={kbId}
-                                                            variant="secondary"
-                                                            className="px-2 py-1 text-xs flex items-center gap-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
-                                                        >
-                                                            {kb.name}
-                                                            <button
-                                                                type="button"
-                                                                className="ml-1 rounded-full hover:bg-gray-300 dark:hover:bg-gray-500 p-0.5 focus:outline-none"
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation(); // Stop event from bubbling
-                                                                    e.preventDefault(); // Prevent default behavior
-                                                                    setSelectedKnowledge(selectedKnowledge.filter(id => id !== kbId));
-                                                                }}
-                                                            >
-                                                                <X className="h-3 w-3" />
-                                                            </button>
-                                                        </Badge>
-                                                    ) : null;
-                                                })}
+                                                    {selectedGroups.length > 0 && (
+                                                        <div className="flex flex-wrap gap-2 mt-3 max-h-[120px] overflow-y-auto p-2 border rounded-md dark:border-gray-600">
+                                                            {selectedGroups.map(groupId => {
+                                                                const group = groups.find(g => g.id === groupId);
+                                                                return group ? (
+                                                                    <Badge
+                                                                        key={groupId}
+                                                                        variant="secondary"
+                                                                        className="px-2 py-1 text-xs flex items-center gap-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
+                                                                    >
+                                                                        {group.name}
+                                                                        <button
+                                                                            type="button"
+                                                                            className="ml-1 rounded-full hover:bg-gray-300 dark:hover:bg-gray-500 p-0.5 focus:outline-none"
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation(); // Stop event from bubbling
+                                                                                e.preventDefault(); // Prevent default behavior
+                                                                                setSelectedGroups(selectedGroups.filter(id => id !== groupId));
+                                                                            }}
+                                                                        >
+                                                                            <X className="h-3 w-3" />
+                                                                        </button>
+                                                                    </Badge>
+                                                                ) : null;
+                                                            })}
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
                                         )}
-                                    </div>
+                                    </TabsContent>
 
-                                    <div className="space-y-4 border rounded-lg p-4 dark:border-gray-700">
-                                        <h4 className="font-medium text-gray-700 dark:text-gray-300">Cấu hình khả năng</h4>
+                                    <TabsContent value="advanced" className="space-y-4 mt-0">
+                                        {/* Advanced tab */}
+                                        <FormField
+                                            control={form.control}
+                                            name="systemPrompt"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className="font-medium text-gray-700 dark:text-gray-300">System Prompt</FormLabel>
+                                                    <FormControl>
+                                                        <Textarea
+                                                            {...field}
+                                                            placeholder="Nhập system prompt cho mô hình AI của bạn"
+                                                            className="min-h-[150px] bg-white dark:bg-gray-700"
+                                                            disabled={isLoading}
+                                                        />
+                                                    </FormControl>
+                                                    <FormDescription className="text-xs text-gray-500 dark:text-gray-400">
+                                                        Hướng dẫn hệ thống cho mô hình AI của bạn
+                                                    </FormDescription>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
 
-                                        <div className="space-y-4">
-                                            <FormField
-                                                control={form.control}
-                                                name="visionEnabled"
-                                                render={({ field }) => (
-                                                    <FormItem className="flex flex-row items-center justify-between p-3 border rounded-md bg-white dark:bg-gray-700 dark:border-gray-600">
-                                                        <div className="space-y-0.5">
-                                                            <FormLabel className="font-medium text-gray-700 dark:text-gray-300">Hỗ trợ vision</FormLabel>
-                                                            <FormDescription className="text-xs text-gray-500 dark:text-gray-400">
-                                                                Cho phép mô hình xử lý hình ảnh
-                                                            </FormDescription>
+                                        <div className="space-y-4 border rounded-lg p-4 dark:border-gray-700">
+                                            <div className="flex justify-between items-center">
+                                                <h4 className="font-medium text-gray-700 dark:text-gray-300">Kho kiến thức liên kết</h4>
+                                                <Badge variant="outline" className="text-xs">
+                                                    {selectedKnowledge.length} đã chọn
+                                                </Badge>
+                                            </div>
+
+                                            <div className="relative">
+                                                <Popover modal={true}>
+                                                    <PopoverTrigger asChild>
+                                                        <Button
+                                                            variant="outline"
+                                                            className="w-full justify-between bg-white dark:bg-gray-700 text-left font-normal"
+                                                            disabled={isLoading}
+                                                        >
+                                                            <div className="flex items-center">
+                                                                <span>
+                                                                    {selectedKnowledge.length > 0
+                                                                        ? `${selectedKnowledge.length} kho kiến thức đã chọn`
+                                                                        : "Chọn kho kiến thức"}
+                                                                </span>
+                                                                {selectedKnowledge.length > 0 && (
+                                                                    <Badge className="ml-2 bg-sky-500 text-white dark:bg-emerald-600 hover:bg-emerald-600 dark:hover:bg-emerald-700">
+                                                                        {selectedKnowledge.length}
+                                                                    </Badge>
+                                                                )}
+                                                            </div>
+                                                            <Info className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                        </Button>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent
+                                                        className="w-full p-0"
+                                                        align="start"
+                                                        side="bottom"
+                                                        sideOffset={4}
+                                                        forceMount
+
+                                                    >
+                                                        <div className="p-2 border-b dark:border-gray-600">
+                                                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                                Chọn một hoặc nhiều kho kiến thức để liên kết với mô hình
+                                                            </p>
                                                         </div>
-                                                        <FormControl>
-                                                            <Switch
-                                                                checked={field.value}
-                                                                onCheckedChange={field.onChange}
-                                                                disabled={isLoading}
-                                                            />
-                                                        </FormControl>
-                                                    </FormItem>
-                                                )}
-                                            />
+                                                        <Command className="w-full">
+                                                            <CommandInput placeholder="Tìm kho kiến thức..." className="h-9" />
+                                                            <CommandList className="max-h-[300px] overflow-auto">
+                                                                <CommandEmpty>Không tìm thấy kho kiến thức nào</CommandEmpty>
+                                                                <CommandGroup heading="Kho kiến thức">
+                                                                    {knowledgeBases.map((kb) => {
+                                                                        const isSelected = selectedKnowledge.includes(kb.id);
+                                                                        return (
+                                                                            <CommandItem
+                                                                                key={kb.id}
+                                                                                onSelect={() => {
+                                                                                    if (isSelected) {
+                                                                                        setSelectedKnowledge(selectedKnowledge.filter(id => id !== kb.id));
+                                                                                    } else {
+                                                                                        setSelectedKnowledge([...selectedKnowledge, kb.id]);
+                                                                                    }
+                                                                                }}
+                                                                                className="flex items-center justify-between py-2"
+                                                                            >
+                                                                                <div className="flex items-center">
+                                                                                    <div className={cn(
+                                                                                        "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                                                                                        isSelected ? "bg-primary text-primary-foreground" : "opacity-50"
+                                                                                    )}>
+                                                                                        {isSelected && <CheckIcon className="h-3 w-3" />}
+                                                                                    </div>
+                                                                                    <span>{kb.name}</span>
+                                                                                </div>
+                                                                                {isSelected && (
+                                                                                    <Badge variant="secondary" className="ml-auto">
+                                                                                        Đã chọn
+                                                                                    </Badge>
+                                                                                )}
+                                                                            </CommandItem>
+                                                                        );
+                                                                    })}
+                                                                </CommandGroup>
+                                                            </CommandList>
+                                                            <div className="p-2 border-t flex justify-between items-center dark:border-gray-600">
+                                                                <span className="text-sm text-gray-500 dark:text-gray-400">
+                                                                    {selectedKnowledge.length} kho kiến thức đã chọn
+                                                                </span>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    onClick={() => setSelectedKnowledge([])}
+                                                                    disabled={selectedKnowledge.length === 0}
+                                                                    className="text-xs"
+                                                                >
+                                                                    Bỏ chọn tất cả
+                                                                </Button>
+                                                            </div>
+                                                        </Command>
+                                                    </PopoverContent>
+                                                </Popover>
+                                            </div>
 
-                                            <FormField
-                                                control={form.control}
-                                                name="usageEnabled"
-                                                render={({ field }) => (
-                                                    <FormItem className="flex flex-row items-center justify-between p-3 border rounded-md bg-white dark:bg-gray-700 dark:border-gray-600">
-                                                        <div className="space-y-0.5">
-                                                            <FormLabel className="font-medium text-gray-700 dark:text-gray-300">Theo dõi sử dụng</FormLabel>
-                                                            <FormDescription className="text-xs text-gray-500 dark:text-gray-400">
-                                                                Theo dõi thống kê sử dụng mô hình
-                                                            </FormDescription>
-                                                        </div>
-                                                        <FormControl>
-                                                            <Switch
-                                                                checked={field.value}
-                                                                onCheckedChange={field.onChange}
-                                                                disabled={isLoading}
-                                                            />
-                                                        </FormControl>
-                                                    </FormItem>
-                                                )}
-                                            />
-
-                                            <FormField
-                                                control={form.control}
-                                                name="citationsEnabled"
-                                                render={({ field }) => (
-                                                    <FormItem className="flex flex-row items-center justify-between p-3 border rounded-md bg-white dark:bg-gray-700 dark:border-gray-600">
-                                                        <div className="space-y-0.5">
-                                                            <FormLabel className="font-medium text-gray-700 dark:text-gray-300">Trích dẫn nguồn</FormLabel>
-                                                            <FormDescription className="text-xs text-gray-500 dark:text-gray-400">
-                                                                Hiển thị trích dẫn cho thông tin từ kho kiến thức
-                                                            </FormDescription>
-                                                        </div>
-                                                        <FormControl>
-                                                            <Switch
-                                                                checked={field.value}
-                                                                onCheckedChange={field.onChange}
-                                                                disabled={isLoading}
-                                                            />
-                                                        </FormControl>
-                                                    </FormItem>
-                                                )}
-                                            />
+                                            {selectedKnowledge.length > 0 && (
+                                                <div className="flex flex-wrap gap-2 mt-3 max-h-[120px] overflow-y-auto p-2 border rounded-md dark:border-gray-600">
+                                                    {selectedKnowledge.map(kbId => {
+                                                        const kb = knowledgeBases.find(k => k.id === kbId);
+                                                        return kb ? (
+                                                            <Badge
+                                                                key={kbId}
+                                                                variant="secondary"
+                                                                className="px-2 py-1 text-xs flex items-center gap-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
+                                                            >
+                                                                {kb.name}
+                                                                <button
+                                                                    type="button"
+                                                                    className="ml-1 rounded-full hover:bg-gray-300 dark:hover:bg-gray-500 p-0.5 focus:outline-none"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation(); // Stop event from bubbling
+                                                                        e.preventDefault(); // Prevent default behavior
+                                                                        setSelectedKnowledge(selectedKnowledge.filter(id => id !== kbId));
+                                                                    }}
+                                                                >
+                                                                    <X className="h-3 w-3" />
+                                                                </button>
+                                                            </Badge>
+                                                        ) : null;
+                                                    })}
+                                                </div>
+                                            )}
                                         </div>
-                                    </div>
-                                </TabsContent>
+
+                                        <div className="space-y-4 border rounded-lg p-4 dark:border-gray-700">
+                                            <h4 className="font-medium text-gray-700 dark:text-gray-300">Cấu hình khả năng</h4>
+
+                                            <div className="space-y-4">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="visionEnabled"
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex flex-row items-center justify-between p-3 border rounded-md bg-white dark:bg-gray-700 dark:border-gray-600">
+                                                            <div className="space-y-0.5">
+                                                                <FormLabel className="font-medium text-gray-700 dark:text-gray-300">Hỗ trợ vision</FormLabel>
+                                                                <FormDescription className="text-xs text-gray-500 dark:text-gray-400">
+                                                                    Cho phép mô hình xử lý hình ảnh
+                                                                </FormDescription>
+                                                            </div>
+                                                            <FormControl>
+                                                                <Switch
+                                                                    checked={field.value}
+                                                                    onCheckedChange={field.onChange}
+                                                                    disabled={isLoading}
+                                                                />
+                                                            </FormControl>
+                                                        </FormItem>
+                                                    )}
+                                                />
+
+                                                <FormField
+                                                    control={form.control}
+                                                    name="usageEnabled"
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex flex-row items-center justify-between p-3 border rounded-md bg-white dark:bg-gray-700 dark:border-gray-600">
+                                                            <div className="space-y-0.5">
+                                                                <FormLabel className="font-medium text-gray-700 dark:text-gray-300">Theo dõi sử dụng</FormLabel>
+                                                                <FormDescription className="text-xs text-gray-500 dark:text-gray-400">
+                                                                    Theo dõi thống kê sử dụng mô hình
+                                                                </FormDescription>
+                                                            </div>
+                                                            <FormControl>
+                                                                <Switch
+                                                                    checked={field.value}
+                                                                    onCheckedChange={field.onChange}
+                                                                    disabled={isLoading}
+                                                                />
+                                                            </FormControl>
+                                                        </FormItem>
+                                                    )}
+                                                />
+
+                                                <FormField
+                                                    control={form.control}
+                                                    name="citationsEnabled"
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex flex-row items-center justify-between p-3 border rounded-md bg-white dark:bg-gray-700 dark:border-gray-600">
+                                                            <div className="space-y-0.5">
+                                                                <FormLabel className="font-medium text-gray-700 dark:text-gray-300">Trích dẫn nguồn</FormLabel>
+                                                                <FormDescription className="text-xs text-gray-500 dark:text-gray-400">
+                                                                    Hiển thị trích dẫn cho thông tin từ kho kiến thức
+                                                                </FormDescription>
+                                                            </div>
+                                                            <FormControl>
+                                                                <Switch
+                                                                    checked={field.value}
+                                                                    onCheckedChange={field.onChange}
+                                                                    disabled={isLoading}
+                                                                />
+                                                            </FormControl>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                        </div>
+                                    </TabsContent>
+                                </div>
                             </Tabs>
 
                             <DialogFooter>
