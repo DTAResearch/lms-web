@@ -1,7 +1,0 @@
-# Ignore all .env files
-.env
-
-# But do not ignore .env.example
-!.env.example
-
-env/

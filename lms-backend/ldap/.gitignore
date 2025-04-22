@@ -1,7 +1,0 @@
-# Certificates and sensitive data
-ldap/data/certificates/
-ldap/data/slapd/
-*.crt
-*.key
-*.pem
-*.ca

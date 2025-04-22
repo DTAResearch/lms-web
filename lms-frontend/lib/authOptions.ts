@@ -82,7 +82,7 @@ export const authOptions: NextAuthOptions = {
                         withCredentials: true
                     });
                     
-                    // console.log("Backend token response:", verifyResponse.data);
+                    console.log("Backend response:", verifyResponse.data);
                     
                     // Extract token from response
                     const backendToken = verifyResponse.data.token;

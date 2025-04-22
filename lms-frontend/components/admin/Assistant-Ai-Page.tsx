@@ -125,6 +125,32 @@ const Models = ({ groupId }: { groupId?: string }) => {
         );
     };
 
+    const handleEditModel = (model: Models) => {
+        // Implementation to handle editing a model
+        // For example, open a modal or navigate to edit page
+        // router.push(`/admin/models/edit/${model.id}`);
+        // or
+        // onOpen("editAssistant", { model });
+
+        console.log("Edit model:", model);
+    };
+
+    const handleDeleteModel = async (model: Models) => {
+        // Implementation to handle deleting a model
+        // You might want to show a confirmation dialog first
+        if (confirm(`Are you sure you want to delete ${model.title}?`)) {
+            try {
+                await axiosInstance.delete(`${API_BASE_URL}/models/${model.id}`);
+                toast.success("Model deleted successfully");
+                // Refresh the models list
+                getModels();
+            } catch (error) {
+                console.error("Error deleting model:", error);
+                toast.error("Failed to delete model");
+            }
+        }
+    };
+
     return (
         <div className="w-full h-full space-y-6">
             <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -163,17 +189,19 @@ const Models = ({ groupId }: { groupId?: string }) => {
                 )}
             </div>
 
-            <div className="bg-gray-200 dark:bg-gray-800 rounded-lg shadow-md p-6 overflow-hidden flex flex-col h-[calc(100vh-200px)]">
+            <div className="bg-gray-200 dark:bg-gray-800 rounded-lg shadow-md p-4 overflow-hidden flex flex-col h-[calc(100vh-200px)]">
                 {isLoading ? (
                     <Loading />
                 ) : filteredModels.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 overflow-y-auto">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 overflow-y-auto">
                         {filteredModels.map((model, index) => (
                             <ModelCard
                                 key={model.id || index}
                                 model={model}
                                 canEdit={canEdit}
                                 onModelUpdated={handleModelUpdated}
+                                onEdit={handleEditModel}
+                                onDelete={handleDeleteModel}
                             />
                         ))}
                     </div>

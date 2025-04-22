@@ -78,7 +78,7 @@ const ListUsers = ({
 			setLoading(true);
 			const payload = { new_role: newRole.toLowerCase() };
 
-			const response = await axiosInstance.patch(
+			const response = await axiosInstance.put(
 				`${API_BASE_URL}/users/update-role/${userId}`,
 				payload,
 			);

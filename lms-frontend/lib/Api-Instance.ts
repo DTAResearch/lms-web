@@ -48,23 +48,23 @@ const axiosInstance = axios.create({
 // );
 
 // Xử lý lỗi từ API
-axiosInstance.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  async (error) => {
-    const originalRequest = error.config;
+// axiosInstance.interceptors.response.use(
+//   (response) => {
+//     return response;
+//   },
+//   async (error) => {
+//     const originalRequest = error.config;
 
-    // Nếu token hết hạn (401), đăng xuất người dùng
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      await signOut({ redirect: false });
-      window.location.href = URL_LOGIN;
-      return Promise.reject(error);
-    }
+//     // Nếu token hết hạn (401), đăng xuất người dùng
+//     if (error.response?.status === 401 && !originalRequest._retry) {
+//       originalRequest._retry = true;
+//       await signOut({ redirect: false });
+//       window.location.href = URL_LOGIN;
+//       return Promise.reject(error);
+//     }
 
-    return Promise.reject(error);
-  }
-);
+//     return Promise.reject(error);
+//   }
+// );
 
 export default axiosInstance;
