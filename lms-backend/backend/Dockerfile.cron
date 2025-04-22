@@ -1,0 +1,68 @@
+# Multi-stage build để giảm kích thước image
+FROM python:3.12-slim AS builder
+
+WORKDIR /app
+
+# Cài đặt build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libpq-dev \
+    libc6-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Tạo virtualenv
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Copy và cài đặt requirements
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt && \
+    pip uninstall -y psycopg2 && \
+    pip install --no-cache-dir psycopg2-binary
+
+# Stage 2: Runtime image
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Cài đặt RUNTIME dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    cron \
+    dos2unix \
+    tzdata \
+    libpq5 \
+    && rm -rf /var/lib/apt/lists/* && \
+    useradd -m cronjob
+
+# Set timezone
+RUN ln -snf /usr/share/zoneinfo/Asia/Ho_Chi_Minh /etc/localtime && \
+    echo "Asia/Ho_Chi_Minh" > /etc/timezone
+
+# Copy virtualenv từ builder
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+ENV PYTHONPATH=/app
+
+# Tạo thư mục logs
+RUN mkdir -p /var/log/cronjobs && \
+    touch /var/log/cronjobs/sync_jobs.log && \
+    chmod 666 /var/log/cronjobs/sync_jobs.log
+
+# Copy scripts và code
+COPY --chown=cronjob:cronjob . .
+RUN chmod +x /app/*.sh && \
+    dos2unix /app/*.sh
+
+# Cấu hình cron job với đường dẫn đầy đủ
+ARG CRON_SCHEDULE="30 0 * * *"
+RUN echo "$CRON_SCHEDULE /app/run_sync_job.sh > /proc/1/fd/1 2>&1" > /etc/cron.d/sync_jobs && \
+    chmod 0644 /etc/cron.d/sync_jobs && \
+    crontab /etc/cron.d/sync_jobs
+
+# Cấu hình environment cho cron
+RUN echo "SHELL=/bin/bash" >> /etc/crontab && \
+    echo "BASH_ENV=/etc/environment" >> /etc/crontab && \
+    echo "PATH=/opt/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> /etc/crontab && \
+    echo "PYTHONPATH=/app" >> /etc/environment
+
+ENTRYPOINT ["/app/entrypoint.sh"]

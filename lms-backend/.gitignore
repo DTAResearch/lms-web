@@ -1,0 +1,20 @@
+*/myenv/
+/myenv/
+__pycache__/
+metabase*
+
+*.env
+*.env.*
+
+# Exclude .env.example from being ignored
+!.env.example
+
+# If there are specific paths to exclude from ignore
+!backend/.env.example
+ main
+ 
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+.qodo

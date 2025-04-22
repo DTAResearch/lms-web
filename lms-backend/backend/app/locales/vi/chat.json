@@ -1,0 +1,14 @@
+{
+    "get_chat_messages_success": "Thành công truy vấn tin nhân",
+    "invalid_request_data": "Dữ liệu yêu cầu không hợp lệ.",
+  "internal_server_error": "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại sau.",
+  "chat_updated_successfully": "Cập nhật cuộc trò chuyện thành công.",
+  "scores_calculated_successfully": "Tính điểm thành công.",
+  "processed_with_errors": "Xử lý hoàn tất với một số lỗi.",
+  "score_recalculation_completed": "Hoàn thành việc chấm điểm lại lúc: ",
+  "scores_recalculated_successfully": "Chấm điểm lại thành công.",
+  "score_recalculated_successfully": "Chấm điểm lại cho chat thành công.",
+  "chat_metadata_processed": "Đã xử lý metadata cho các cuộc trò chuyện.",
+  "database_error": "Lỗi kết nối cơ sở dữ liệu.",
+  "chat_metadata_updated": "Cập nhật metadata thành công."
+}

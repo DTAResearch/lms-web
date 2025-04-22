@@ -1,0 +1,37 @@
+[
+    {
+      "question": "Sóng âm là gì?",
+      "answer": "Sóng âm là một dạng sóng cơ học mà ...",
+      "is_request": true
+    },
+    {
+      "question": "Công nghệ phần mềm là gì?",
+      "answer": "Công nghệ phần mềm là lĩnh vực nghiên cứu và ứng dụng các phương pháp, công cụ để thiết kế, phát triển và duy trì các phần mềm chất lượng cao.",
+      "is_request": true
+    },
+    {
+      "question": "Python là gì?",
+      "answer": "Python là một ngôn ngữ lập trình bậc cao, dễ học và dễ sử dụng, được thiết kế để hỗ trợ phát triển nhanh các ứng dụng và có cú pháp rõ ràng.",
+      "is_request": true
+    },
+    {
+      "question": "Tôi có thể giúp gì cho bạn?",
+      "answer": "Hãy dạy tôi về Vật Lý.",
+      "is_request": false
+    },
+    {
+      "question": "Bạn đang ở trình độ nào?",
+      "answer": "Tôi là một sinh viên năm hai.",
+      "is_request": false
+    },
+    {
+      "question": "Bạn đã có những kiến thức cơ bản về Python. Vậy cho tôi biết sự khác biệt giữa vòng lặp for và while?",
+      "answer": "Không. Tôi chưa biết gì.",
+      "is_request": false
+    },
+    {
+      "question": "Bạn đã trả lời xong câu hỏi. Bạn có yêu cầu gì nữa không?",
+      "answer": "Tôi muốn biết về ...",
+      "is_request": false
+    }
+  ]

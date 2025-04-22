@@ -1,0 +1,138 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - release-v1.0
+      - staging-v1.0
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    environment:
+      name: ${{ github.ref_name == 'release-v1.0' && 'production' || 'staging' }}
+      url: ${{ github.ref_name == 'release-v1.0' && 'https://lms.hoctiep.com' || 'https://staging-lms.hoctiep.com' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Set up environment
+        run: |
+          echo "Starting deployment at $(date)"
+          echo "Running as $(whoami)"
+          echo "Docker status: $(docker info | grep 'Server Version')"
+          echo "Deploying to ${{ github.ref_name == 'release-v1.0' && 'Production' || 'Staging' }} environment"
+      
+      - name: Pull latest changes
+        run: |
+          cd /home/saokhue/lms-learn-with-ai
+          git fetch --all
+          git checkout ${{ github.ref_name }}
+          git pull origin ${{ github.ref_name }}
+      
+      - name: Deploy with Docker Compose
+        id: deploy
+        run: |
+          # Lưu commit hash hiện tại để rollback nếu cần
+          CURRENT_COMMIT=$(git rev-parse HEAD)
+          PREVIOUS_COMMIT=$(git rev-parse HEAD~1)
+          echo "Deploying commit: $CURRENT_COMMIT"
+          echo "Previous commit: $PREVIOUS_COMMIT"
+          echo "PREVIOUS_COMMIT=$PREVIOUS_COMMIT" >> $GITHUB_ENV
+
+          # Truy cập folder
+          cd /home/saokhue/lms-learn-with-ai
+          
+          # Chọn file Docker Compose dựa vào branch
+          if [ "${{ github.ref_name }}" = "release-v1.0" ]; then
+            COMPOSE_FILE="docker-compose.app_sk.yml"
+          else
+            COMPOSE_FILE="docker-compose.app_staging.yml"
+          fi
+          
+          echo "Using Docker Compose file: $COMPOSE_FILE"
+          
+          # Dừng các containers hiện tại
+          docker compose -f $COMPOSE_FILE down
+          
+          # Build và khởi động containers mới
+          docker compose -f $COMPOSE_FILE up -d --build
+          
+          # Kiểm tra trạng thái
+          docker compose -f $COMPOSE_FILE ps
+      
+      - name: Verify Deployment
+        id: verify
+        run: |
+          cd /home/saokhue/lms-learn-with-ai
+          
+          # Chọn file Docker Compose dựa vào branch
+          if [ "${{ github.ref_name }}" = "release-v1.0" ]; then
+            COMPOSE_FILE="docker-compose.app_sk.yml"
+          else
+            COMPOSE_FILE="docker-compose.app_staging.yml"
+          fi
+          
+          # Đợi 30 giây để các containers khởi động hoàn toàn
+          echo "Waiting for containers to start up completely..."
+          sleep 30
+          
+          # Kiểm tra containers đang chạy
+          echo "Checking container status..."
+          CONTAINER_STATUS=$(docker compose -f $COMPOSE_FILE ps)
+          echo "$CONTAINER_STATUS"
+          
+          # Đếm số lượng containers đang chạy
+          RUNNING_CONTAINERS=$(docker compose -f $COMPOSE_FILE ps --status running | grep -v "NAME" | wc -l)
+          
+          echo "Running containers: $RUNNING_CONTAINERS"
+          
+          if [ $RUNNING_CONTAINERS -lt 1 ]; then
+            echo "Error: No containers are running"
+            docker compose -f $COMPOSE_FILE logs
+            exit 1
+          fi
+          
+          echo "Deployment verification completed successfully"
+      
+      - name: Rollback on Failure
+        if: failure() && steps.deploy.outcome == 'success' && steps.verify.outcome == 'failure'
+        run: |
+          echo "Deployment verification failed, rolling back to previous commit: ${{ env.PREVIOUS_COMMIT }}"
+          
+          cd /home/saokhue/lms-learn-with-ai
+          git checkout ${{ env.PREVIOUS_COMMIT }}
+          
+          # Chọn file Docker Compose dựa vào branch
+          if [ "${{ github.ref_name }}" = "release-v1.0" ]; then
+            COMPOSE_FILE="docker-compose.app_sk.yml"
+          else
+            COMPOSE_FILE="docker-compose.app_staging.yml"
+          fi
+          
+          # Rebuild và restart với commit trước đó
+          docker compose -f $COMPOSE_FILE down
+          docker compose -f $COMPOSE_FILE up -d --build
+          
+          echo "Rollback completed"
+      
+      - name: Cleanup
+        if: always()
+        run: |
+          # Truy cập folder
+          cd /home/saokhue/lms-learn-with-ai
+          
+          # Chọn file Docker Compose dựa vào branch
+          if [ "${{ github.ref_name }}" = "release-v1.0" ]; then
+            COMPOSE_FILE="docker-compose.app_sk.yml"
+          else
+            COMPOSE_FILE="docker-compose.app_staging.yml"
+          fi
+          
+          # Xóa images không sử dụng
+          docker image prune -af
+          
+          # Hiển thị logs
+          docker compose -f $COMPOSE_FILE logs --tail=50
