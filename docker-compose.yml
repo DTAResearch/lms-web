@@ -3,12 +3,12 @@ version: '2.0'
 services:
   lms-web:
     build:
-      context: ./lms-web
+      context: .
       dockerfile: dockerfile
       args:
-        - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8000}
+        - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-https://staging-api-lms.hoctiep.com}
         - NEXT_FRONTEND_URL=${NEXT_FRONTEND_URL:-http://localhost:3000}
-        - NEXT_BACKEND_URL=${NEXT_BACKEND_URL:-http://localhost:8000}
+        - NEXT_BACKEND_URL=${NEXT_BACKEND_URL:-https://staging-api-lms.hoctiep.com}
         - NEXT_HOCTIEP_URL=${NEXT_HOCTIEP_URL}
         - NEXT_HOCTIEP_KEY=${NEXT_HOCTIEP_KEY}
         - NEXT_METABASE_INSTANCE_URL=${NEXT_METABASE_INSTANCE_URL}
@@ -19,7 +19,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8000}
+      - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-https://staging-api-lms.hoctiep.com}
       - NEXT_FRONTEND_URL=${NEXT_FRONTEND_URL:-http://localhost:3000}
       - NEXT_BACKEND_URL=${NEXT_BACKEND_URL:-http://localhost:8000}
       - NEXT_HOCTIEP_URL=${NEXT_HOCTIEP_URL}
