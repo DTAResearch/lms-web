@@ -36,7 +36,8 @@ import {
 } from "lucide-react"
 import { SiGoogleclassroom } from "react-icons/si";
 import Link from "next/link"
-
+import { usePathname } from "next/navigation"
+import { cn } from "@/lib/utils"
 
 const projects = [
 	{
@@ -52,34 +53,29 @@ const navAdmin = [
 		url: "/admin/analysis",
 		icon: ChartNoAxesCombined,
 		isActive: false,
-		items: [
-			{
-				title: "Danh sách",
-				url: "/admin/analysis",
-			},
-		],
+		
 	},
 	{
 		title: "Người dùng",
 		url: "/admin/users",
 		icon: Users,
-		items: [
-			{
-				title: "Danh sách",
-				url: "#",
-			},
-		],
+		// items: [
+		// 	{
+		// 		title: "Danh sách",
+		// 		url: "#",
+		// 	},
+		// ],
 	},
 	{
 		title: "Trợ lý AI",
 		url: "/admin/assistant-ai",
 		icon: Bot,
-		items: [
-			{
-				title: "Danh sách",
-				url: "/admin/assistant-ai",
-			},
-		],
+		// items: [
+		// 	{
+		// 		title: "Danh sách",
+		// 		url: "/admin/assistant-ai",
+		// 	},
+		// ],
 	},
 	{
 		title: "Lớp học",
@@ -107,24 +103,32 @@ const navAdmin = [
 
 export function NavAdmin() {
 	const { isMobile } = useSidebar()
+	const pathname = usePathname()
 
 	return (
 		// <SidebarGroup className="group-data-[collapsible=icon]:hidden">
 		<SidebarGroup>
 			<SidebarGroupLabel>Admin</SidebarGroupLabel>
 			<SidebarMenu>
-				{navAdmin.map((item) => (
+				{navAdmin.map((item) => {
+					const isActive = pathname === item.url || pathname?.startsWith(item.url + "/")
+					return (
 					<Collapsible
 						key={item.title}
 						asChild
-						defaultOpen={item.isActive}
+							defaultOpen={item.isActive || isActive}
 						className="group/collapsible"
 					>
 						<SidebarMenuItem>
 							<CollapsibleTrigger asChild>
 								<Link href={item.url}>
-									<SidebarMenuButton tooltip={item.title}>
-
+										<SidebarMenuButton 
+											tooltip={item.title}
+											className={cn(
+												"hover:bg-sky-300 hover:text-white dark:hover:bg-sky-700 dark:hover:text-white",
+												isActive && "bg-sky-100 text-sky-400 rounded-md hover:bg-sky-300 hover:text-white dark:bg-sky-700 dark:text-sky-300"
+											)}
+										>
 										{item.icon && <item.icon />}
 										<p className="w-64 overflow-hidden whitespace-nowrap text-ellipsis">{item.title}</p>
 										<ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
@@ -133,57 +137,29 @@ export function NavAdmin() {
 							</CollapsibleTrigger>
 							<CollapsibleContent>
 								<SidebarMenuSub>
-									{item.items?.map((subItem) => (
+										{item.items?.map((subItem) => {
+											const isSubActive = pathname === subItem.url
+											return (
 										<SidebarMenuSubItem key={subItem.title}>
-											<SidebarMenuSubButton asChild>
+													<SidebarMenuSubButton 
+														asChild
+														className={cn(
+															isSubActive && "bg-sidebar-accent text-sidebar-accent-foreground"
+														)}
+													>
 												<a href={subItem.url}>
 													<span>{subItem.title}</span>
 												</a>
 											</SidebarMenuSubButton>
 										</SidebarMenuSubItem>
-									))}
+											)
+										})}
 								</SidebarMenuSub>
 							</CollapsibleContent>
 						</SidebarMenuItem>
 					</Collapsible>
-				))}
-				{/* {projects.map((item) => (
-					<SidebarMenuItem key={item.name}>
-						<SidebarMenuButton asChild>
-							<a href={item.url}>
-								<item.icon />
-								<span>{item.name}</span>
-							</a>
-						</SidebarMenuButton>
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<SidebarMenuAction showOnHover>
-									<MoreHorizontal />
-									<span className="sr-only">More</span>
-								</SidebarMenuAction>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent
-								className="w-48 rounded-lg"
-								side={isMobile ? "bottom" : "right"}
-								align={isMobile ? "end" : "start"}
-							>
-								<DropdownMenuItem>
-									<Folder className="text-muted-foreground" />
-									<span>View Project</span>
-								</DropdownMenuItem>
-								<DropdownMenuItem>
-									<Forward className="text-muted-foreground" />
-									<span>Share Project</span>
-								</DropdownMenuItem>
-								<DropdownMenuSeparator />
-								<DropdownMenuItem>
-									<Trash2 className="text-muted-foreground" />
-									<span>Delete Project</span>
-								</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
-					</SidebarMenuItem>
-				))} */}
+					)
+				})}
 				<SidebarMenuItem>
 					<SidebarMenuButton className="text-sidebar-foreground/70">
 						<MoreHorizontal className="text-sidebar-foreground/70" />

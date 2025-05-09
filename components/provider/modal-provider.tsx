@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { CreateAssistant } from "../modals/create-assitant";
+import { AssistantModal } from "../modals/assitant-modal";
+import { DeleteAssistantModal } from "../modals/delete-assistant-modal";
 
 export const ModalProvider = () => {
     const [isMounted, setIsMounted] = useState(false);
@@ -12,10 +13,10 @@ export const ModalProvider = () => {
     if (!isMounted) {
         return null;
     }
-
     return (
         <>
-            <CreateAssistant />
+            <AssistantModal />
+            <DeleteAssistantModal />
         </>
     );
 };

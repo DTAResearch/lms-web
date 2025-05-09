@@ -7,6 +7,7 @@ import { LoginForm } from "@/components/auth/login-form";
 import { GalleryVerticalEnd } from "lucide-react";
 import Image, { StaticImageData } from "next/image"
 import LogoLMS from "@/public/images/logo.png"
+import Background from "@/public/images/background.jpg"
 
 export default function LoginPage() {
     return (
@@ -30,8 +31,8 @@ export default function LoginPage() {
                 </div>
             </div>
             <div className="relative hidden bg-muted lg:block">
-                <img
-                    src="/placeholder.svg"
+                <Image
+                    src={Background}
                     alt="Image"
                     className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
                 />

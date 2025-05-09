@@ -91,7 +91,7 @@ export const authOptions: NextAuthOptions = {
                     // Step 2: Use the token for /users/me
                     const me = await axios.get(`${API_BASE_URL}/users/me`, {
                         headers: {
-                            "Authorization": `Bearer ${backendToken}`,
+                            "Authorization": `${backendToken}`,
                             "X-Requested-With": "XMLHttpRequest",
                             "Cookie": `access_token=${backendToken}` // Include the session token in the request
                         },

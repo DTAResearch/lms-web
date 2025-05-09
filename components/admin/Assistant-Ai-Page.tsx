@@ -96,7 +96,7 @@ const Models = ({ groupId }: { groupId?: string }) => {
             // console.log("Response:", response.data.data);
 
             if (response.status === 200) {
-                console.log("Models:", response.data.data);
+                // console.log("Models:", response.data.data);
                 setModels(response.data.data);
             }
             setIsLoading(false);
@@ -108,7 +108,7 @@ const Models = ({ groupId }: { groupId?: string }) => {
 
     useEffect(() => {
         getModels();
-    }, [groupId]);
+    }, [groupId, isSubmit]);
 
     const isAdmin = session?.user?.role === Role.ADMIN;
     const isTeacher = session?.user?.role === Role.TEACHER;
@@ -135,25 +135,27 @@ const Models = ({ groupId }: { groupId?: string }) => {
         console.log("Edit model:", model);
     };
 
-    const handleDeleteModel = async (model: Models) => {
-        // Implementation to handle deleting a model
-        // You might want to show a confirmation dialog first
-        if (confirm(`Are you sure you want to delete ${model.title}?`)) {
-            try {
-                await axiosInstance.delete(`${API_BASE_URL}/models/${model.id}`);
-                toast.success("Model deleted successfully");
-                // Refresh the models list
-                getModels();
-            } catch (error) {
-                console.error("Error deleting model:", error);
-                toast.error("Failed to delete model");
-            }
-        }
-    };
+    // const handleDeleteModel = async (model: Models) => {
+    //     // Implementation to handle deleting a model
+    //     // You might want to show a confirmation dialog first
+    //     // onOpen("deleteAssistant",  model );
+       
+    //     // if (confirm(`Are you sure you want to delete ${model.title}?`)) {
+    //     //     try {
+    //     //         await axiosInstance.delete(`${API_BASE_URL}/models/${model.id}`);
+    //     //         toast.success("Model deleted successfully");
+    //     //         // Refresh the models list
+    //     //         getModels();
+    //     //     } catch (error) {
+    //     //         console.error("Error deleting model:", error);
+    //     //         toast.error("Failed to delete model");
+    //     //     }
+    //     // }
+    // };
 
     return (
         <div className="w-full h-full space-y-6">
-            <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="bg-white mb-2 dark:bg-gray-800 shadow-md rounded-lg p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="relative w-full md:w-1/3">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <Search className="h-4 w-4 text-gray-400 dark:text-gray-400" />
@@ -180,7 +182,7 @@ const Models = ({ groupId }: { groupId?: string }) => {
                         </Button>
                         <Button
                             onClick={() => onOpen("createAssistant")}
-                            className="bg-sky-600 hover:bg-sky-700 text-white"
+                            className="bg-sky-400 hover:bg-sky-500 text-white"
                         >
                             <CirclePlus className="w-4 h-4 mr-2" />
                             Thêm mới
@@ -189,7 +191,7 @@ const Models = ({ groupId }: { groupId?: string }) => {
                 )}
             </div>
 
-            <div className="bg-gray-200 dark:bg-gray-800 rounded-lg shadow-md p-4 overflow-hidden flex flex-col h-[calc(100vh-200px)]">
+            <div className="bg-gray-200 dark:bg-gray-800 rounded-lg shadow-md p-4 overflow-hidden flex flex-col h-[calc(100vh-160px)]">
                 {isLoading ? (
                     <Loading />
                 ) : filteredModels.length > 0 ? (
@@ -201,7 +203,6 @@ const Models = ({ groupId }: { groupId?: string }) => {
                                 canEdit={canEdit}
                                 onModelUpdated={handleModelUpdated}
                                 onEdit={handleEditModel}
-                                onDelete={handleDeleteModel}
                             />
                         ))}
                     </div>
@@ -216,7 +217,7 @@ const Models = ({ groupId }: { groupId?: string }) => {
                                 onClick={() => router.push("/admin/models/detail")}
                                 variant="outline"
                                 size="sm"
-                                className="mt-4 text-sky-600 dark:text-sky-400"
+                                className="mt-4 text-sky-400 dark:text-sky-400"
                             >
                                 <CirclePlus className="w-4 h-4 mr-2" />
                                 Tạo mô hình mới

@@ -34,6 +34,9 @@ import {
 	ChartNoAxesCombined
 } from "lucide-react"
 import { SiGoogleclassroom } from "react-icons/si";
+import { usePathname } from "next/navigation"
+import { cn } from "@/lib/utils"
+import Link from "next/link"
 
 
 const projects = [
@@ -44,7 +47,7 @@ const projects = [
 	}
 ]
 
-const navAdmin = [
+const navTeacher = [
 	{
 		title: "Phân tích",
 		url: "#",
@@ -110,79 +113,65 @@ const navAdmin = [
 
 export function NavTeacher() {
 	const { isMobile } = useSidebar()
+	const pathname = usePathname()
 
 	return (
 		<SidebarGroup>
 			<SidebarGroupLabel>Teacher</SidebarGroupLabel>
 			<SidebarMenu>
-				{navAdmin.map((item) => (
-					<Collapsible
-						key={item.title}
-						asChild
-						defaultOpen={item.isActive}
-						className="group/collapsible"
-					>
-						<SidebarMenuItem>
-							<CollapsibleTrigger asChild>
-								<SidebarMenuButton tooltip={item.title}>
-									{item.icon && <item.icon />}
-									<p className="w-64 overflow-hidden whitespace-nowrap text-ellipsis">{item.title}</p>
-									<ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-								</SidebarMenuButton>
-							</CollapsibleTrigger>
-							<CollapsibleContent>
-								<SidebarMenuSub>
-									{item.items?.map((subItem) => (
-										<SidebarMenuSubItem key={subItem.title}>
-											<SidebarMenuSubButton asChild>
-												<a href={subItem.url}>
-													<span>{subItem.title}</span>
-												</a>
-											</SidebarMenuSubButton>
-										</SidebarMenuSubItem>
-									))}
-								</SidebarMenuSub>
-							</CollapsibleContent>
-						</SidebarMenuItem>
-					</Collapsible>
-				))}
-				{/* {projects.map((item) => (
-					<SidebarMenuItem key={item.name}>
-						<SidebarMenuButton asChild>
-							<a href={item.url}>
-								<item.icon />
-								<span>{item.name}</span>
-							</a>
-						</SidebarMenuButton>
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<SidebarMenuAction showOnHover>
-									<MoreHorizontal />
-									<span className="sr-only">More</span>
-								</SidebarMenuAction>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent
-								className="w-48 rounded-lg"
-								side={isMobile ? "bottom" : "right"}
-								align={isMobile ? "end" : "start"}
-							>
-								<DropdownMenuItem>
-									<Folder className="text-muted-foreground" />
-									<span>View Project</span>
-								</DropdownMenuItem>
-								<DropdownMenuItem>
-									<Forward className="text-muted-foreground" />
-									<span>Share Project</span>
-								</DropdownMenuItem>
-								<DropdownMenuSeparator />
-								<DropdownMenuItem>
-									<Trash2 className="text-muted-foreground" />
-									<span>Delete Project</span>
-								</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
-					</SidebarMenuItem>
-				))} */}
+				{navTeacher.map((item) => {
+					const isActive = item.items?.some(subItem => 
+						pathname === subItem.url || pathname?.startsWith(subItem.url + "/")
+					)
+					
+					return (
+						<Collapsible
+							key={item.title}
+							asChild
+							defaultOpen={item.isActive || isActive}
+							className="group/collapsible"
+						>
+							<SidebarMenuItem>
+								<CollapsibleTrigger asChild>
+									<Link href={item.url}>
+										<SidebarMenuButton 
+											tooltip={item.title}
+											className={cn(
+												"hover:bg-sky-300 hover:text-white",
+												isActive && "bg-sky-100 text-sky-400 rounded-md hover:bg-sky-300 hover:text-white"
+											)}
+										>
+											{item.icon && <item.icon />}
+											<p className="w-64 overflow-hidden whitespace-nowrap text-ellipsis">{item.title}</p>
+											<ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+										</SidebarMenuButton>
+									</Link>
+								</CollapsibleTrigger>
+								<CollapsibleContent>
+									<SidebarMenuSub>
+										{item.items?.map((subItem) => {
+											const isActive = pathname === subItem.url || pathname?.startsWith(subItem.url + "/")
+											return (
+												<SidebarMenuSubItem key={subItem.title}>
+													<SidebarMenuSubButton 
+														asChild
+														className={cn(
+															isActive && "bg-sidebar-accent text-sidebar-accent-foreground"
+														)}
+													>
+														<a href={subItem.url}>
+															<span>{subItem.title}</span>
+														</a>
+													</SidebarMenuSubButton>
+												</SidebarMenuSubItem>
+											)
+										})}
+									</SidebarMenuSub>
+								</CollapsibleContent>
+							</SidebarMenuItem>
+						</Collapsible>
+					)
+				})}
 				<SidebarMenuItem>
 					<SidebarMenuButton className="text-sidebar-foreground/70">
 						<MoreHorizontal className="text-sidebar-foreground/70" />

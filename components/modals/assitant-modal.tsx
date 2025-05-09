@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "@/lib/Api-Instance";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -62,13 +62,14 @@ import { cn } from "@/lib/utils";
 import { API_BASE_URL } from "@/constants/URL";
 import { useModal } from "@/hooks/use-modal-store";
 import { Loader2 } from "lucide-react";
-import axiosInstance from "@/lib/Api-Instance";
+
 
 // Form schema using zod
 const formSchema = z.object({
     name: z.string().min(1, { message: "Tên mô hình không được để trống" }),
     modelId: z.string().min(1, { message: "ID mô hình không được để trống" }),
     baseModelId: z.string().min(1, { message: "Vui lòng chọn mô hình cơ sở" }),
+    departmentId: z.string().optional(),
     description: z.string().optional(),
     systemPrompt: z.string().optional(),
     imageUrl: z.string().url({ message: "URL ảnh không hợp lệ" }).optional(),
@@ -80,13 +81,31 @@ const formSchema = z.object({
     citationsEnabled: z.boolean().default(true),
 });
 
-export const CreateAssistant = () => {
-    const { isOpen, onClose, type, data } = useModal();
-    const isModalOpen = isOpen && type === "createAssistant";
-    const { modelId: editModelId, groupId } = data || {};
-    const isEditing = !!editModelId;
+interface ModelBase {
+    id: string;
+    name: string;
+}
 
-    const [baseModels, setBaseModels] = useState<string[]>([]);
+interface Department {
+    department_id: string;
+    department_name: string;
+    faculty_id: string;
+    faculty_name: string;
+}
+
+
+export const AssistantModal = () => {
+    const { isOpen, onClose, type, data } = useModal();
+    const isCreateMode = isOpen && type === "createAssistant";
+    const isEditMode = isOpen && type === "editAssistant";
+    const isModalOpen = isCreateMode || isEditMode;
+
+    const editModelId = data || {};
+
+    const isEditing = isEditMode && !!editModelId;
+
+    const [baseModels, setBaseModels] = useState<ModelBase[]>([]);
+    const [departments, setDepartments] = useState<Department[]>([]);
     const [groups, setGroups] = useState<{ id: string; name: string }[]>([]);
     const [knowledgeBases, setKnowledgeBases] = useState<{ id: string; name: string }[]>([]);
     const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
@@ -101,6 +120,7 @@ export const CreateAssistant = () => {
             name: "",
             modelId: "",
             baseModelId: "",
+            departmentId: "",
             description: "",
             systemPrompt: "",
             imageUrl: "",
@@ -111,31 +131,31 @@ export const CreateAssistant = () => {
         }
     });
 
-    // Generate model ID from name
-    const createIdFromName = (name: string) => {
-        if (!name) return "";
+    // // Generate model ID from name
+    // const createIdFromName = (name: string) => {
+    //     if (!name) return "";
 
-        let id = name
-            .toLowerCase()
-            .trim()
-            .replace(/\s+/g, "-")
-            .replace(/[^\w\s-]/g, "")
-            .replace(/-+/g, "-");
+    //     let id = name
+    //         .toLowerCase()
+    //         .trim()
+    //         .replace(/\s+/g, "-")
+    //         .replace(/[^\w\s-]/g, "")
+    //         .replace(/-+/g, "-");
 
-        // Remove Vietnamese accents
-        id = id.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        id = id.replace(/[đĐ]/g, "d");
+    //     // Remove Vietnamese accents
+    //     id = id.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    //     id = id.replace(/[đĐ]/g, "d");
 
-        return id;
-    };
+    //     return id;
+    // };
 
-    // Watch name field to auto-generate ID
-    const watchName = form.watch("name");
-    useEffect(() => {
-        if (!isEditing && watchName) {
-            form.setValue("modelId", createIdFromName(watchName));
-        }
-    }, [watchName, form, isEditing]);
+    // // Watch name field to auto-generate ID
+    // const watchName = form.watch("name");
+    // useEffect(() => {
+    //     if (!isEditing && watchName) {
+    //         form.setValue("modelId", createIdFromName(watchName));
+    //     }
+    // }, [watchName, form, isEditing]);
 
     // Fetch base models
     const fetchBaseModels = async () => {
@@ -145,12 +165,28 @@ export const CreateAssistant = () => {
             if (response.status === 200) {
                 setBaseModels(response.data.data);
                 if (response.data.data.length > 0 && !editModelId) {
-                    form.setValue("baseModelId", response.data.data[0]);
+                    form.setValue("baseModelId", response.data.data[0].id);
                 }
             }
         } catch (error) {
             console.error("Error fetching base models:", error);
             toast.error("Không thể tải danh sách mô hình cơ sở");
+        } finally {
+            setIsFetchingData(false);
+        }
+    };
+
+    // Fetch departments
+    const fetchDepartments = async () => {
+        try {
+            setIsFetchingData(true);
+            const response = await axiosInstance.get(`${API_BASE_URL}/departments`);
+            if (response.status === 200) {
+                setDepartments(response.data.data);
+            }
+        } catch (error) {
+            console.error("Error fetching departments:", error);
+            toast.error("Không thể tải danh sách khoa/phòng ban");
         } finally {
             setIsFetchingData(false);
         }
@@ -199,25 +235,26 @@ export const CreateAssistant = () => {
                 const modelData = response.data.data;
 
                 form.setValue("name", modelData.name);
-                form.setValue("modelId", modelData.model_id);
+                form.setValue("modelId", modelData.id || modelData.model_id);
                 form.setValue("baseModelId", modelData.base_model_id);
-                form.setValue("description", modelData.description || "");
-                form.setValue("systemPrompt", modelData.system_prompt || "");
-                form.setValue("imageUrl", modelData.profile_image_url || "");
+                form.setValue("departmentId", modelData.department_id || "");
+                form.setValue("description", modelData.meta?.description || "");
+                form.setValue("systemPrompt", modelData.params?.system || "");
+                form.setValue("imageUrl", modelData.meta?.profile_image_url || "");
                 form.setValue("visibility", modelData.access_control ? "PRIVATE" : "PUBLIC");
 
-                if (modelData.capabilities) {
-                    form.setValue("visionEnabled", modelData.capabilities.vision || false);
-                    form.setValue("usageEnabled", modelData.capabilities.usage || false);
-                    form.setValue("citationsEnabled", modelData.capabilities.citations || false);
+                if (modelData.meta?.capabilities) {
+                    form.setValue("visionEnabled", modelData.meta.capabilities.vision || false);
+                    form.setValue("usageEnabled", modelData.meta.capabilities.usage || false);
+                    form.setValue("citationsEnabled", modelData.meta.capabilities.citations || false);
                 }
 
                 if (modelData.access_control?.read?.group_ids) {
                     setSelectedGroups(modelData.access_control.read.group_ids);
                 }
 
-                if (modelData.knowledge) {
-                    setSelectedKnowledge(modelData.knowledge.map((item: any) => item.id));
+                if (modelData.meta?.knowledge) {
+                    setSelectedKnowledge(modelData.meta.knowledge.map((item: any) => item.id));
                 }
             }
         } catch (error) {
@@ -234,11 +271,13 @@ export const CreateAssistant = () => {
             fetchBaseModels();
             fetchGroups();
             fetchKnowledgeBases();
-            if (editModelId) {
+            fetchDepartments();
+
+            if (isEditMode && editModelId) {
                 fetchModelDetails();
             }
         }
-    }, [isModalOpen, editModelId]);
+    }, [isModalOpen, editModelId, isEditMode]);
 
     // Form submission
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -273,17 +312,16 @@ export const CreateAssistant = () => {
                 return {
                     id: kbId,
                     name: kb?.name || "",
-                    // Add any additional required properties
                 };
             });
 
             // Structure the request according to API requirements
             const requestData = {
-                id: values.modelId,
                 name: values.name,
                 base_model_id: values.baseModelId,
+                department_id: values.departmentId || undefined,
                 params: {
-                    system: values.systemPrompt || "" // Use system as the property name
+                    system: values.systemPrompt || ""
                 },
                 access_control: accessControl,
                 meta: {
@@ -292,13 +330,18 @@ export const CreateAssistant = () => {
                     profile_image_url: values.imageUrl || "",
                     suggestion_prompts: [], // Required empty array
                     tags: [], // Required empty array
-                    knowledge: knowledgeItems // Correctly formatted knowledge items
+                    knowledge: knowledgeItems.length > 0 ? knowledgeItems : []
                 }
             };
 
+            // For put requests, add the id field
+            if (isEditMode) {
+                (requestData as any).id = editModelId;
+            }
+
             console.log("Sending request data:", requestData);
 
-            if (isEditing) {
+            if (isEditMode) {
                 // Update existing model
                 const response = await axiosInstance.put(`${API_BASE_URL}/models/${editModelId}`, requestData);
                 if (response.status === 200) {
@@ -335,10 +378,10 @@ export const CreateAssistant = () => {
             <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-800">
                 <DialogHeader>
                     <DialogTitle className="text-xl font-bold text-center">
-                        {isEditing ? "Chỉnh sửa mô hình AI" : "Tạo mô hình AI mới"}
+                        {isEditMode ? "Chỉnh sửa mô hình AI" : "Tạo mô hình AI mới"}
                     </DialogTitle>
                     <DialogDescription className="text-center text-gray-500 dark:text-gray-400">
-                        {isEditing ? "Cập nhật thông tin cho mô hình AI hiện có" : "Tạo và tùy chỉnh một mô hình AI mới"}
+                        {isEditMode ? "Cập nhật thông tin cho mô hình AI hiện có" : "Tạo và tùy chỉnh một mô hình AI mới"}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -357,7 +400,7 @@ export const CreateAssistant = () => {
                                     <TabsTrigger value="advanced">Cấu hình nâng cao</TabsTrigger>
                                 </TabsList>
 
-                                <div className="min-h-[520px]"> {/* Chiều cao cố định cho tất cả tab content */}
+                                <div className="min-h-[520px]">
                                     <TabsContent value="basic" className="space-y-4 mt-0">
                                         {/* Basic information tab */}
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -394,7 +437,6 @@ export const CreateAssistant = () => {
                                                                 {...field}
                                                                 placeholder="model-id"
                                                                 className="bg-gray-50 dark:bg-gray-700"
-                                                                //   disabled={isEditing || isLoading}
                                                                 disabled={true}
                                                             />
                                                         </FormControl>
@@ -407,38 +449,74 @@ export const CreateAssistant = () => {
                                             />
                                         </div>
 
-                                        <FormField
-                                            control={form.control}
-                                            name="baseModelId"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel className="font-medium text-gray-700 dark:text-gray-300">Mô hình cơ sở</FormLabel>
-                                                    <Select
-                                                        onValueChange={field.onChange}
-                                                        defaultValue={field.value}
-                                                        value={field.value}
-                                                        disabled={isLoading}
-                                                    >
-                                                        <FormControl>
-                                                            <SelectTrigger className="bg-white dark:bg-gray-700">
-                                                                <SelectValue placeholder="Chọn mô hình cơ sở" />
-                                                            </SelectTrigger>
-                                                        </FormControl>
-                                                        <SelectContent>
-                                                            {baseModels.map((model) => (
-                                                                <SelectItem key={model} value={model}>
-                                                                    {model}
-                                                                </SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
-                                                    <FormDescription className="text-xs text-gray-500 dark:text-gray-400">
-                                                        Mô hình AI cơ sở được sử dụng
-                                                    </FormDescription>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <FormField
+                                                control={form.control}
+                                                name="baseModelId"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="font-medium text-gray-700 dark:text-gray-300">Mô hình cơ sở</FormLabel>
+                                                        <Select
+                                                            onValueChange={field.onChange}
+                                                            defaultValue={field.value}
+                                                            value={field.value}
+                                                            disabled={isLoading}
+                                                        >
+                                                            <FormControl>
+                                                                <SelectTrigger className="bg-white dark:bg-gray-700">
+                                                                    <SelectValue placeholder="Chọn mô hình cơ sở" />
+                                                                </SelectTrigger>
+                                                            </FormControl>
+                                                            <SelectContent>
+                                                                {baseModels.map((model, index) => (
+                                                                    <SelectItem key={index} value={model.id}>
+                                                                        {model.name}
+                                                                    </SelectItem>
+                                                                ))}
+                                                            </SelectContent>
+                                                        </Select>
+                                                        <FormDescription className="text-xs text-gray-500 dark:text-gray-400">
+                                                            Mô hình AI cơ sở được sử dụng
+                                                        </FormDescription>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <FormField
+                                                control={form.control}
+                                                name="departmentId"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="font-medium text-gray-700 dark:text-gray-300">Khoa/Phòng ban</FormLabel>
+                                                        <Select
+                                                            onValueChange={field.onChange}
+                                                            defaultValue={field.value}
+                                                            value={field.value}
+                                                            disabled={isLoading}
+                                                        >
+                                                            <FormControl>
+                                                                <SelectTrigger className="bg-white dark:bg-gray-700 truncate overflow-hidden whitespace-nowrap max-w-full ">
+                                                                    <SelectValue placeholder="Chọn khoa/phòng ban" />
+                                                                </SelectTrigger>
+                                                            </FormControl>
+                                                            <SelectContent>
+                                                                {/* <SelectItem value="" >Không có khoa/phòng ban</SelectItem> */}
+                                                                {departments.map((dept) => (
+                                                                    <SelectItem key={dept.department_id} value={dept.department_id}>
+                                                                        {dept.department_name} - {dept.faculty_name}
+                                                                    </SelectItem>
+                                                                ))}
+                                                            </SelectContent>
+                                                        </Select>
+                                                        <FormDescription className="text-xs text-gray-500 dark:text-gray-400">
+                                                            Khoa hoặc phòng ban quản lý mô hình này
+                                                        </FormDescription>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
 
                                         <FormField
                                             control={form.control}
@@ -540,14 +618,16 @@ export const CreateAssistant = () => {
                                                                     <div className="flex items-center">
                                                                         <span>
                                                                             {selectedGroups.length > 0
-                                                                                ? `${selectedGroups.length} nhóm đã chọn`
+                                                                                ? <Badge className=" bg-sky-100 text-sky-400 rounded-sm dark:bg-sky-600 dark:text-white hover:bg-sky-300 hover:text-white dark:hover:bg-sky-700">
+                                                                                    {selectedGroups.length} nhóm đã chọn
+                                                                                </Badge>
                                                                                 : "Chọn nhóm người dùng"}
                                                                         </span>
-                                                                        {selectedGroups.length > 0 && (
+                                                                        {/* {selectedGroups.length > 0 && (
                                                                             <Badge className="ml-2 bg-sky-500 text-white dark:bg-sky-600 hover:bg-sky-600 dark:hover:bg-sky-700">
                                                                                 {selectedGroups.length}
                                                                             </Badge>
-                                                                        )}
+                                                                        )} */}
                                                                     </div>
                                                                     <Info className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                                 </Button>
@@ -560,13 +640,7 @@ export const CreateAssistant = () => {
                                                                 forceMount
                                                                 style={{ zIndex: 9999, position: "relative" }}
                                                             >
-                                                                {/* <div className="p-2 border-b dark:border-gray-600">
-                                <p className="text-sm text-gray-500 dark:text-gray-400">
-                                  Chọn một hoặc nhiều nhóm người dùng
-                                </p>
-                              </div> */}
                                                                 <Command>
-                                                                    {/* <CommandInput placeholder="Tìm nhóm..." className="h-9" /> */}
                                                                     <CommandList className="max-h-[300px] overflow-auto">
                                                                         <CommandEmpty>Không tìm thấy nhóm nào</CommandEmpty>
                                                                         <CommandGroup heading="Nhóm người dùng">
@@ -586,10 +660,10 @@ export const CreateAssistant = () => {
                                                                                     >
                                                                                         <div className="flex items-center">
                                                                                             <div className={cn(
-                                                                                                "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                                                                                                isSelected ? "bg-primary text-primary-foreground" : "opacity-50"
+                                                                                                "mr-2 flex h-4 w-4 items-center justify-center rounded-full border border-primary",
+                                                                                                isSelected ? "bg-sky-400 text-white border-sky-400" : "opacity-50"
                                                                                             )}>
-                                                                                                {isSelected && <CheckIcon className="h-3 w-3" />}
+                                                                                                {isSelected && <CheckIcon className="h-1 w-1 text-white" />}
                                                                                             </div>
                                                                                             <span>{group.name}</span>
                                                                                         </div>
@@ -604,9 +678,9 @@ export const CreateAssistant = () => {
                                                                         </CommandGroup>
                                                                     </CommandList>
                                                                     <div className="p-2 border-t flex justify-between items-center dark:border-gray-600">
-                                                                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                                                                        {/* <span className="text-sm text-gray-500 dark:text-gray-400">
                                                                             {selectedGroups.length} nhóm đã chọn
-                                                                        </span>
+                                                                        </span> */}
                                                                         <Button
                                                                             variant="ghost"
                                                                             size="sm"
@@ -637,8 +711,8 @@ export const CreateAssistant = () => {
                                                                             type="button"
                                                                             className="ml-1 rounded-full hover:bg-gray-300 dark:hover:bg-gray-500 p-0.5 focus:outline-none"
                                                                             onClick={(e) => {
-                                                                                e.stopPropagation(); // Stop event from bubbling
-                                                                                e.preventDefault(); // Prevent default behavior
+                                                                                e.stopPropagation();
+                                                                                e.preventDefault();
                                                                                 setSelectedGroups(selectedGroups.filter(id => id !== groupId));
                                                                             }}
                                                                         >
@@ -697,14 +771,16 @@ export const CreateAssistant = () => {
                                                             <div className="flex items-center">
                                                                 <span>
                                                                     {selectedKnowledge.length > 0
-                                                                        ? `${selectedKnowledge.length} kho kiến thức đã chọn`
+                                                                        ? <Badge className=" bg-sky-100 text-sky-400 rounded-sm dark:bg-sky-600 dark:text-white hover:bg-sky-300 hover:text-white dark:hover:bg-sky-700">
+                                                                            {selectedKnowledge.length} kho kiến thức đã chọn
+                                                                        </Badge>
                                                                         : "Chọn kho kiến thức"}
                                                                 </span>
-                                                                {selectedKnowledge.length > 0 && (
+                                                                {/* {selectedKnowledge.length > 0 && (
                                                                     <Badge className="ml-2 bg-sky-500 text-white dark:bg-emerald-600 hover:bg-emerald-600 dark:hover:bg-emerald-700">
                                                                         {selectedKnowledge.length}
                                                                     </Badge>
-                                                                )}
+                                                                )} */}
                                                             </div>
                                                             <Info className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                         </Button>
@@ -715,7 +791,6 @@ export const CreateAssistant = () => {
                                                         side="bottom"
                                                         sideOffset={4}
                                                         forceMount
-
                                                     >
                                                         <div className="p-2 border-b dark:border-gray-600">
                                                             <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -723,7 +798,7 @@ export const CreateAssistant = () => {
                                                             </p>
                                                         </div>
                                                         <Command className="w-full">
-                                                            <CommandInput placeholder="Tìm kho kiến thức..." className="h-9" />
+                                                            {/* <CommandInput placeholder="Tìm kho kiến thức..." className="h-9" /> */}
                                                             <CommandList className="max-h-[300px] overflow-auto">
                                                                 <CommandEmpty>Không tìm thấy kho kiến thức nào</CommandEmpty>
                                                                 <CommandGroup heading="Kho kiến thức">
@@ -743,10 +818,10 @@ export const CreateAssistant = () => {
                                                                             >
                                                                                 <div className="flex items-center">
                                                                                     <div className={cn(
-                                                                                        "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                                                                                        isSelected ? "bg-primary text-primary-foreground" : "opacity-50"
+                                                                                        "mr-2 flex h-4 w-4 items-center justify-center rounded-full border border-primary",
+                                                                                        isSelected ? "bg-sky-400 text-white border-sky-400" : "opacity-50"
                                                                                     )}>
-                                                                                        {isSelected && <CheckIcon className="h-3 w-3" />}
+                                                                                        {isSelected && <CheckIcon className="h-3 w-3 text-white" />}
                                                                                     </div>
                                                                                     <span>{kb.name}</span>
                                                                                 </div>
@@ -761,9 +836,9 @@ export const CreateAssistant = () => {
                                                                 </CommandGroup>
                                                             </CommandList>
                                                             <div className="p-2 border-t flex justify-between items-center dark:border-gray-600">
-                                                                <span className="text-sm text-gray-500 dark:text-gray-400">
+                                                                {/* <span className="text-sm text-gray-500 dark:text-gray-400">
                                                                     {selectedKnowledge.length} kho kiến thức đã chọn
-                                                                </span>
+                                                                </span> */}
                                                                 <Button
                                                                     variant="ghost"
                                                                     size="sm"
@@ -794,8 +869,8 @@ export const CreateAssistant = () => {
                                                                     type="button"
                                                                     className="ml-1 rounded-full hover:bg-gray-300 dark:hover:bg-gray-500 p-0.5 focus:outline-none"
                                                                     onClick={(e) => {
-                                                                        e.stopPropagation(); // Stop event from bubbling
-                                                                        e.preventDefault(); // Prevent default behavior
+                                                                        e.stopPropagation();
+                                                                        e.preventDefault();
                                                                         setSelectedKnowledge(selectedKnowledge.filter(id => id !== kbId));
                                                                     }}
                                                                 >
@@ -889,22 +964,21 @@ export const CreateAssistant = () => {
                                     variant="outline"
                                     onClick={handleClose}
                                     disabled={isLoading}
-                                    className="border-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
+                                    className="border-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 cursor-pointer"
                                 >
                                     Hủy
                                 </Button>
                                 <Button
                                     type="submit"
-                                    // type="button"   
                                     disabled={isLoading}
-                                    className="bg-sky-600 hover:bg-sky-700 text-white"
+                                    className="bg-sky-400 hover:bg-sky-500 text-white cursor-pointer"
                                 >
                                     {isLoading ? (
                                         <>
                                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                             Đang xử lý...
                                         </>
-                                    ) : isEditing ? (
+                                    ) : isEditMode ? (
                                         "Cập nhật mô hình"
                                     ) : (
                                         "Tạo mô hình"

@@ -16,6 +16,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreVertical, Edit, Trash2 } from "lucide-react";
+import { useModal } from "@/hooks/use-modal-store"
 
 interface ModelCardProps {
 	model: Models;
@@ -34,6 +35,7 @@ const ModelCard = ({
 }: ModelCardProps) => {
 	const [isActive, setIsActive] = useState(model.is_active);
 	const [isLoading, setIsLoading] = useState(false);
+	const { onOpen } = useModal();
 
 	const handleToggle = async () => {
 		const url = `${API_BASE_URL}/models/toggle/is-active/${model.id}`;
@@ -62,23 +64,11 @@ const ModelCard = ({
 		}
 	};
 
-	const handleEdit = () => {
-		if (onEdit) {
-			onEdit(model);
-		}
-	};
-
-	const handleDelete = () => {
-		if (onDelete) {
-			onDelete(model);
-		}
-	};
-
 	return (
-		<div className="group relative">
+		<div className="group relative dark:bg">
 			<div className={cn(
-				"bg-white dark:bg-gray-750 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-700",
-				"hover:shadow-md hover:border-gray-200 dark:hover:border-gray-600 transition-all duration-200",
+				"bg-white dark:bg-gray-700 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-700",
+				"hover:shadow-lg hover:-translate-y-1 hover:border-gray-200 dark:hover:border-gray-600 transition-all duration-200",
 				"flex flex-col items-center h-full",
 				canEdit && "cursor-pointers"
 			)}>
@@ -93,17 +83,17 @@ const ModelCard = ({
 							<DropdownMenuContent align="end" className="w-40">
 								<DropdownMenuItem
 									className="flex items-center gap-2 cursor-pointer"
-									onClick={handleEdit}
+									onClick={()=> onOpen("editAssistant", model.id)}
 								>
 									<Edit className="h-4 w-4" />
 									<span>Chỉnh sửa</span>
 								</DropdownMenuItem>
 								<DropdownMenuItem
 									className="flex items-center gap-2 cursor-pointer text-red-500 focus:text-red-500"
-									onClick={handleDelete}
+									onClick={()=> onOpen("deleteAssistant", model)}
 								>
 									<Trash2 className="h-4 w-4" />
-									<span>Xóa</span>
+									<span>Xóa</span>	
 								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
@@ -113,22 +103,24 @@ const ModelCard = ({
 				<div className="mb-4">
 					<div className="w-28 h-28 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700 backdrop-blur-sm flex items-center justify-center">
 						{isActive ? (
-							<a
-								href={`https://chat.hoctiep.com/?models=${model.id}`}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="w-full h-full flex items-center justify-center cursor-pointer"
-							>
-								<Image
-									src={model.image_url || "/images/logo.png"}
-									alt={model.title}
-									width={112}
-									height={112}
-									className="object-cover rounded-full group-hover:scale-105 transition-transform duration-300"
-									priority
-									unoptimized
-								/>
-							</a>
+							<ActionTooltip label="Chat với model" side="right">
+								<a
+									href={`https://chat.hoctiep.com/?models=${model.id}`}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="w-full h-full flex items-center justify-center cursor-pointer"
+								>
+									<Image
+										src={model.image_url || ""}
+										alt={model.title}
+										width={112}
+										height={112}
+										className="object-cover rounded-full group-hover:scale-105 transition-transform duration-300"
+										priority
+										unoptimized
+									/>
+								</a>
+							</ActionTooltip>
 						) : (
 							<Image
 								src={model.image_url || "/images/logo.png"}
@@ -143,11 +135,11 @@ const ModelCard = ({
 					</div>
 				</div>
 
-				<h3 className="text-lg font-medium text-gray-800 dark:text-gray-100 text-center mb-1 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
+				<h3 className="text-lg font-medium truncate w-full text-gray-800 dark:text-gray-100 text-center mb-1 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
 					{model.title}
 				</h3>
 
-				<p className="text-sm text-gray-500 dark:text-gray-400 text-center line-clamp-2">
+				<p className="text-sm text-gray-500 dark:text-gray-300 text-center line-clamp-2">
 					{model.description || "No description available"}
 				</p>
 
@@ -176,7 +168,7 @@ const ModelCard = ({
 				)}
 
 				{model.author && (
-					<p className="text-xs text-gray-400 dark:text-gray-500 mt-3">
+					<p className="text-xs text-gray-400 dark:text-gray-300 mt-3">
 						Created by {model.author}
 					</p>
 				)}
