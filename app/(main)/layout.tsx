@@ -43,7 +43,7 @@ const MainLayout = async ({
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 md:p-2 p-0 ">
+        <div className="flex flex-1 flex-col gap-4 md:p-2 p-0 h-full w-full">
           {children}
         </div>
       </SidebarInset>

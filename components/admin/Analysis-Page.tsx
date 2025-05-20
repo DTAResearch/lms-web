@@ -13,7 +13,6 @@ export const AnalysisPage = () => {
     useEffect(() => {
         const fetchDashboard = async () => {
             try {
-
                 const response = await axiosInstance.get(`${API_BASE_URL}/iframe/dashboard`)
                 setIframeUrl(response.data.data);
             } catch (error) {
@@ -25,7 +24,7 @@ export const AnalysisPage = () => {
     }, []);
 
     return (
-        <div className="h-screen w-full pt-1">
+        <div className="h-full w-full pt-1">
             {iframeUrl ? (
                 <iframe
                     src={iframeUrl}

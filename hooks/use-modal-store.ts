@@ -1,7 +1,6 @@
 import { create } from "zustand";
-import { Models } from "@/components/admin/Assistant-Ai-Page";
 
-export type ModalType = "createAssistant" | "editAssistant" | "deleteAssistant";
+export type ModalType = "createAssistant" | "editAssistant" | "deleteAssistant" | "createUser";
 
 interface ModalData {
   groupId?: string;
@@ -32,28 +31,28 @@ export const useModal = create<ModalStore>((set) => ({
 
       const overlays = document.querySelectorAll('[data-radix-focus-guard]');
       overlays.forEach(el => el.remove());
-      
+
 
       document.body.removeAttribute('aria-hidden');
       document.documentElement.removeAttribute('data-radix-focus-lock');
-      
+
 
       document.body.style.pointerEvents = '';
-      
+
 
       document.body.classList.remove('overflow-hidden');
-      
- 
+
+
       setTimeout(() => {
-        set({ 
-          isOpen: true, 
-          type, 
+        set({
+          isOpen: true,
+          type,
           data,
-          isSubmit: false 
+          isSubmit: false
         });
       }, 5); // delay nhỏ để đảm bảo DOM đã được cập nhật
     };
-    
+
     // Nếu đang mở modal khác, đóng nó trước
     set((state) => {
       if (state.isOpen) {
@@ -69,12 +68,12 @@ export const useModal = create<ModalStore>((set) => ({
   },
   onClose: () => {
     set({ isOpen: false, type: null });
-    
+
     // Thực hiện dọn dẹp khi đóng modal
     setTimeout(() => {
       const overlays = document.querySelectorAll('[data-radix-focus-guard]');
       overlays.forEach(el => el.remove());
-      
+
       document.body.removeAttribute('aria-hidden');
       document.documentElement.removeAttribute('data-radix-focus-lock');
       document.body.style.pointerEvents = '';
@@ -87,7 +86,7 @@ export const useModal = create<ModalStore>((set) => ({
     // Dọn dẹp các hiệu ứng modal có thể còn sót lại
     const overlays = document.querySelectorAll('[data-radix-focus-guard]');
     overlays.forEach(el => el.remove());
-    
+
     document.body.removeAttribute('aria-hidden');
     document.documentElement.removeAttribute('data-radix-focus-lock');
     document.body.style.pointerEvents = '';
