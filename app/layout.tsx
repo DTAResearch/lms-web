@@ -5,7 +5,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { ThemeProvider } from "@/components/provider/theme-provider"
 import AuthCookieManager from "@/components/AuthCookieManager";
 import { ModalProvider } from "@/components/provider/modal-provider";
-import { Toaster } from "sonner";
+import { Toaster } from "@/components/ui/sonner"
 
 
 const geistSans = Geist({
@@ -44,16 +44,17 @@ export default function RootLayout({
           </ThemeProvider>
         </AuthProvider>
         <Toaster
-          toastOptions={{
-            classNames: {
-              success: "!bg-emerald-400 !text-white !border !border-green-300",
-              error: "!bg-red-500 !text-white !border !border-red-300",
-              warning: "!bg-yellow-400 !text-white !border !border-yellow-300",
-              info: "!bg-blue-500 !text-white !border !border-blue-300",
-              description: "text-sm opacity-80",
-              closeButton: "hover:text-white"
-            },
-          }}
+          richColors
+        // toastOptions={{
+        //   classNames: {
+        //     success: "!bg-emerald-400 !text-white !border !border-green-300",
+        //     error: "!bg-red-500 !text-white !border !border-red-300",
+        //     warning: "!bg-yellow-400 !text-white !border !border-yellow-300",
+        //     info: "!bg-blue-500 !text-white !border !border-blue-300",
+        //     description: "text-sm opacity-80",
+        //     closeButton: "hover:text-white"
+        //   },
+        // }}
         />
       </body>
     </html>

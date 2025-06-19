@@ -11,12 +11,6 @@ export default function Dashboard() {
 	const router = useRouter();
 
 	useEffect(() => {
-		if (session?.user?.backendToken) {
-			localStorage.setItem("access_token", session.user.backendToken);
-		}
-	}, [session]);
-
-	useEffect(() => {
 		if (status === "unauthenticated") {
 			router.push("/auth/login");
 			return;

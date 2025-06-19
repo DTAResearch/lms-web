@@ -25,7 +25,6 @@ export const DeleteAssistantModal = () => {
 
     const [isLoading, setIsLoading] = useState(false);
 
-    // Sử dụng useEffect để đảm bảo cleanup khi component unmount
     useEffect(() => {
         return () => {
             if (isModalOpen) {
@@ -37,7 +36,6 @@ export const DeleteAssistantModal = () => {
     const handleClose = () => {
         if (!isLoading) {
             onClose();
-            // Đảm bảo focus trap và overlay được dọn sạch
             setTimeout(() => {
                 cleanupModalEffects();
             }, 50);

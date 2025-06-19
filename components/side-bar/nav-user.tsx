@@ -43,6 +43,8 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar()
   const { data: session } = useSession();
+  const users = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user") || "{}") : {};
+  const avatar = users?.avatar || session?.user?.image || "";
 
   return (
     <SidebarMenu>
@@ -54,7 +56,7 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-full">
-                <AvatarImage src={session?.user?.image || ""} alt={session?.user?.name || ""} />
+                <AvatarImage src={avatar || ""} alt={session?.user?.name || ""} />
                 <AvatarFallback className="rounded-lg">{session?.user?.name?.charAt(0)}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -73,7 +75,7 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-full">
-                  <AvatarImage src={session?.user?.image || ""} alt={session?.user?.name || ""} />
+                  <AvatarImage src={avatar || ""} alt={session?.user?.name || ""} />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
