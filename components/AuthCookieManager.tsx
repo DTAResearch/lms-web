@@ -20,21 +20,21 @@ export default function AuthCookieManager() {
   //   }
   // }, [session]);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (session?.user?.loginType === "google" || session?.user?.loginType === "outlook") {
-        if (session.user.accessToken) {
-          document.cookie = `access_token=${session.user.accessToken}; path=/; secure; samesite=strict`;
-        }
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     if (session?.user?.loginType === "google" || session?.user?.loginType === "outlook") {
+  //       if (session.user.accessToken) {
+  //         document.cookie = `access_token=${session.user.accessToken}; path=/; secure; samesite=strict`;
+  //       }
 
-        const userData = await axiosInstance.get(`${API_BASE_URL}/users/me`)
-        // lưu user vào localStorage để sử dụng sau này
-        localStorage.setItem("user", JSON.stringify(userData.data));
-      }
-    };
+  //       const userData = await axiosInstance.get(`${API_BASE_URL}/users/me`)
+  //       // lưu user vào localStorage để sử dụng sau này
+  //       localStorage.setItem("user", JSON.stringify(userData.data));
+  //     }
+  //   };
 
-    fetchUserData();
-  }, [session]);
+  //   fetchUserData();
+  // }, [session]);
 
   return null; // This component doesn't render anything
 }

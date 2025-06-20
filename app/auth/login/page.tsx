@@ -21,7 +21,7 @@ export default function LoginPage() {
                                 <Image src={LogoLMS as StaticImageData} alt="Logo-LMS" className="size-8" />
                             </div>
                         </div>
-                        Học tiếp - LMS
+                        Trợ giảng AI
                     </a>
                 </div>
                 <div className="flex flex-1 items-center justify-center">

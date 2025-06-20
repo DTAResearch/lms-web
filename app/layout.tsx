@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { ThemeProvider } from "@/components/provider/theme-provider"
 import AuthCookieManager from "@/components/AuthCookieManager";
 import { ModalProvider } from "@/components/provider/modal-provider";
@@ -31,6 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <GoogleOAuthProvider clientId={process.env.GOOGLE_CLIENT_ID || ""}>
         <AuthProvider>
           <ThemeProvider
             attribute="class"
@@ -43,19 +45,11 @@ export default function RootLayout({
             {children}
           </ThemeProvider>
         </AuthProvider>
-        <Toaster
-          richColors
-        // toastOptions={{
-        //   classNames: {
-        //     success: "!bg-emerald-400 !text-white !border !border-green-300",
-        //     error: "!bg-red-500 !text-white !border !border-red-300",
-        //     warning: "!bg-yellow-400 !text-white !border !border-yellow-300",
-        //     info: "!bg-blue-500 !text-white !border !border-blue-300",
-        //     description: "text-sm opacity-80",
-        //     closeButton: "hover:text-white"
-        //   },
-        // }}
+        <Toaster 
+          richColors={false}
+          position="top-center"
         />
+        </GoogleOAuthProvider>
       </body>
     </html>
   );
