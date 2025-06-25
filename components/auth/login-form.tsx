@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { toast } from "sonner";
 import axios from "axios";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -14,18 +13,19 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
 import { useTranslations } from "next-intl";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
+import { API_BASE_URL } from "@/constants/URL";
+import Logo from "@/public/images/logo.png";
+import Image, { StaticImageData } from "next/image";
+import { toast } from "sonner";
 // Schema validation với Zod
 const loginSchema = z.object({
     email: z
         .string()
-        .min(1, "Vui lòng nhập email")
-        .email("Email không hợp lệ"),
+        .min(1, "emailRequired")
+        .email("emailInvalid"),
     password: z
         .string()
-        .min(1, "Vui lòng nhập mật khẩu")
+        .min(1, "passwordRequired")
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -108,14 +108,15 @@ export function LoginForm({
     return (
         <form className={cn("flex flex-col gap-6", className)} onSubmit={handleSubmit(onSubmit)} {...props}>
             <div className="flex flex-col items-center gap-2 text-center">
-                <h1 className="text-3xl font-bold text-blue-600">{t("loginTitle")}</h1>
-                <p className="text-balance text-sm text-muted-foreground">
+                <Image src={Logo as StaticImageData} alt="Logo-LMS" className="w-27 h-25" />
+                <h1 className="text-3xl font-bold text-primary hidden sm:block">{t("loginTitle")}</h1>
+                <p className="text-balance text-sm text-primary/90 hidden sm:block">
                     {t("loginSubtitle")}
                 </p>
             </div>
             <div className="grid gap-6">
                 <div className="grid gap-2">
-                    <Label htmlFor="email">{t("email")}</Label>
+                    <Label className="text-primary" htmlFor="email">{t("email")}</Label>
                     <Input
                         id="email"
                         type="email"
@@ -124,11 +125,11 @@ export function LoginForm({
                         className={errors.email ? "border-red-500" : ""}
                     />
                     {errors.email && (
-                        <p className="text-sm text-red-500">{errors.email.message}</p>
+                        <p className="text-sm text-red-500">{t(errors.email.message || "")}</p>
                     )}
                 </div>
                 <div className="grid gap-2">
-                    <Label htmlFor="password">{t("password")}</Label>
+                    <Label className="text-primary" htmlFor="password">{t("password")}</Label>
                     <div className="relative">
                         <Input
                             id="password"
@@ -156,13 +157,13 @@ export function LoginForm({
                         </Button>
                     </div>
                     {errors.password && (
-                        <p className="text-sm text-red-500">{errors.password.message}</p>
+                        <p className="text-sm text-red-500">{t(errors.password.message || "")}</p>
                     )}
                 </div>
                 <Button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                    className="w-full bg-gradient-to-r from-primary to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
                     {isLoading ? t("signingIn") : t("signIn")}
                 </Button>
                 <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
