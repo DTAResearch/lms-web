@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { NextIntlClientProvider } from 'next-intl';
+import { Loading } from '../loading';
 
 type I18nContextType = {
   locale: string;
@@ -10,7 +11,7 @@ type I18nContextType = {
 
 const I18nContext = createContext<I18nContextType>({
   locale: 'vi',
-  setLocale: () => {},
+  setLocale: () => { },
 });
 
 export const useI18n = () => useContext(I18nContext);
@@ -47,15 +48,18 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     loadMessages(newLocale);
   };
 
-  // Don't render children until messages are loaded
-  // if (isLoading) {
-  //   return <div>Loading...</div>;
-  // }
+  // Show loading spinner until messages are loaded
+  if (isLoading) {
+    return (
+      <Loading/>
+    );
+  }
+
 
   return (
     <I18nContext.Provider value={{ locale, setLocale: changeLocale }}>
-      <NextIntlClientProvider 
-        locale={locale} 
+      <NextIntlClientProvider
+        locale={locale}
         messages={messages}
         timeZone="Asia/Ho_Chi_Minh"
       >

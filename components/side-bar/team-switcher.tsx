@@ -47,7 +47,7 @@ export function TeamSwitcher({
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-full border">
+              <div className="bg-white text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-full">
                 {/* <activeTeam.logo className="size-4" /> */}
                 <Image src={LogoLMS as StaticImageData} alt="Logo-LMS" className="size-8" />
               </div>
