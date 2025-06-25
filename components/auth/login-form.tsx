@@ -13,6 +13,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -35,6 +36,7 @@ export function LoginForm({
 }: React.ComponentPropsWithoutRef<"form">) {
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const t = useTranslations();
 
     const {
         register,
@@ -108,7 +110,7 @@ export function LoginForm({
             <div className="flex flex-col items-center gap-2 text-center">
                 <h1 className="text-3xl font-bold text-blue-600">Trợ giảng AI</h1>
                 <p className="text-balance text-sm text-muted-foreground">
-                    Học tập trải nghiệm với trợ giảng AI thông minh 
+                    Học tập trải nghiệm với trợ giảng AI thông minh
                 </p>
             </div>
             <div className="grid gap-6">
@@ -161,7 +163,7 @@ export function LoginForm({
                     type="submit"
                     disabled={isLoading}
                     className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
-                    {isLoading ? "Đăng đăng nhập..." : "Đăng nhập"}
+                    {isLoading ? t("signingIn") : t("signIn")}
                 </Button>
                 <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                     <span className="relative z-10 bg-background px-2 text-muted-foreground">

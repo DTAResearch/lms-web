@@ -16,7 +16,7 @@ export default function MicrosoftLoginButton() {
         <Button
             type="button"
             variant="outline"
-            className="w-full font-normal rounded-[5px] hover:border-blue-500 hover:bg-blue-50/40 focus:ring-blue-500 focus:ring-offset-blue-100"
+            className="w-full font-normal rounded-[5px] hover:border-blue-200 hover:bg-blue-50/40 focus:ring-blue-500 focus:ring-offset-blue-100"
             onClick={handleMicrosoftLogin}
         >
             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 48 48">

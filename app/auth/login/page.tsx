@@ -8,6 +8,7 @@ import { GalleryVerticalEnd } from "lucide-react";
 import Image, { StaticImageData } from "next/image"
 import LogoLMS from "@/public/images/logo.png"
 import Background from "@/public/images/background.jpg"
+import LanguageSwitch from "@/components/language-switch";
 
 export default function LoginPage() {
     return (
@@ -36,6 +37,9 @@ export default function LoginPage() {
                     alt="Image"
                     className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
                 />
+            </div>
+            <div className="absolute bottom-4 left-4 z-10 flex items-center gap-2">
+                <LanguageSwitch />
             </div>
         </div>
     );
