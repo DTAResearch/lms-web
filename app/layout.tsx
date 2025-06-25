@@ -8,6 +8,7 @@ import AuthCookieManager from "@/components/AuthCookieManager";
 import { ModalProvider } from "@/components/provider/modal-provider";
 import { Toaster } from "@/components/ui/sonner"
 import { I18nProvider } from "@/components/provider/i18nProvider";
+import { GOOGLE_CLIENT_ID } from "@/constants/Key";
 
 
 const geistSans = Geist({
@@ -33,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <GoogleOAuthProvider clientId={process.env.GOOGLE_CLIENT_ID || ""}>
+        <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID || ""}>
           <I18nProvider>
             <AuthProvider>
               <ThemeProvider

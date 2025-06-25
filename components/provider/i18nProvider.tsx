@@ -1,4 +1,3 @@
-// lib/i18nProvider.tsx
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -19,6 +18,7 @@ export const useI18n = () => useContext(I18nContext);
 export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocale] = useState('vi');
   const [messages, setMessages] = useState<any>({});
+  const [isLoading, setIsLoading] = useState(true);
 
   // Load ngôn ngữ đã lưu
   useEffect(() => {
@@ -27,10 +27,19 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const loadMessages = async (newLocale: string) => {
-    // const mod = await import(`../locales/${newLocale}/common.json`);
-    const mod = await import(`@/locales/${newLocale}/common.json`);
-    setMessages(mod.default);
-    setLocale(newLocale);
+    try {
+      setIsLoading(true);
+      const mod = await import(`@/locales/${newLocale}/common.json`);
+      // console.log('Loaded messages for', newLocale, ':', mod.default); // Debug log
+      setMessages(mod.default);
+      setLocale(newLocale);
+    } catch (error) {
+      // console.error('Error loading messages:', error);
+      // Fallback to empty object
+      setMessages({});
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const changeLocale = (newLocale: string) => {
@@ -38,9 +47,18 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     loadMessages(newLocale);
   };
 
+  // Don't render children until messages are loaded
+  // if (isLoading) {
+  //   return <div>Loading...</div>;
+  // }
+
   return (
     <I18nContext.Provider value={{ locale, setLocale: changeLocale }}>
-      <NextIntlClientProvider locale={locale} messages={messages}>
+      <NextIntlClientProvider 
+        locale={locale} 
+        messages={messages}
+        timeZone="Asia/Ho_Chi_Minh"
+      >
         {children}
       </NextIntlClientProvider>
     </I18nContext.Provider>

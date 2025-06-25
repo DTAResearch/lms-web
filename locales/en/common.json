@@ -3,5 +3,20 @@
     "language": "Language",
     "welcome": "Welcome to our application",
     "signIn": "Sign In",
-    "signingIn": "Signing in ..."
+    "signingIn": "Signing in...",
+    "email": "Email",
+    "password": "Password",
+    "loginTitle": "AI Assistant",
+    "loginSubtitle": "Learning experience with smart AI assistant",
+    "orContinueWith": "Or continue with",
+    "emailPlaceholder": "example@email.com",
+    "passwordPlaceholder": "Password",
+    "emailRequired": "Please enter your email",
+    "emailInvalid": "Invalid email address",
+    "passwordRequired": "Please enter your password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "googleSignIn": "Sign in with Google",
+    "microsoftSignIn": "Sign in with Microsoft",
+    "footer": "© 2025 Học Tiếp. All rights reserved."
 }

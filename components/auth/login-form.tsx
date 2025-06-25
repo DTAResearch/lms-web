@@ -108,18 +108,18 @@ export function LoginForm({
     return (
         <form className={cn("flex flex-col gap-6", className)} onSubmit={handleSubmit(onSubmit)} {...props}>
             <div className="flex flex-col items-center gap-2 text-center">
-                <h1 className="text-3xl font-bold text-blue-600">Trợ giảng AI</h1>
+                <h1 className="text-3xl font-bold text-blue-600">{t("loginTitle")}</h1>
                 <p className="text-balance text-sm text-muted-foreground">
-                    Học tập trải nghiệm với trợ giảng AI thông minh
+                    {t("loginSubtitle")}
                 </p>
             </div>
             <div className="grid gap-6">
                 <div className="grid gap-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email">{t("email")}</Label>
                     <Input
                         id="email"
                         type="email"
-                        placeholder="example@email.com"
+                        placeholder={t("emailPlaceholder")}
                         {...register("email")}
                         className={errors.email ? "border-red-500" : ""}
                     />
@@ -128,12 +128,12 @@ export function LoginForm({
                     )}
                 </div>
                 <div className="grid gap-2">
-                    <Label htmlFor="password">Mật khẩu</Label>
+                    <Label htmlFor="password">{t("password")}</Label>
                     <div className="relative">
                         <Input
                             id="password"
                             type={showPassword ? "text" : "password"}
-                            placeholder="Mật khẩu"
+                            placeholder={t("passwordPlaceholder")}
                             {...register("password")}
                             className={cn(
                                 "pr-10",
@@ -146,7 +146,7 @@ export function LoginForm({
                             size="sm"
                             className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                             onClick={() => setShowPassword(!showPassword)}
-                            aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                            aria-label={showPassword ? t("hidePassword") : t("showPassword")}
                         >
                             {showPassword ? (
                                 <EyeOff className="h-4 w-4 text-muted-foreground" />
@@ -167,7 +167,7 @@ export function LoginForm({
                 </Button>
                 <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                     <span className="relative z-10 bg-background px-2 text-muted-foreground">
-                        Hoặc tiếp tục với
+                        {t("orContinueWith")}
                     </span>
                 </div>
                 <div className="flex flex-col gap-4">

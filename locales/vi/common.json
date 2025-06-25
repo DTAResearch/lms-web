@@ -3,5 +3,20 @@
     "language": "Ngôn ngữ",
     "welcome": "Chào mừng bạn đến với ứng dụng của chúng tôi",
     "signIn": "Đăng nhập",
-    "signingIn": "Đang đăng nhập..."
+    "signingIn": "Đang đăng nhập...",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "loginTitle": "Trợ giảng AI",
+    "loginSubtitle": "Học tập trải nghiệm với trợ giảng AI thông minh",
+    "orContinueWith": "Hoặc tiếp tục với",
+    "emailPlaceholder": "example@email.com",
+    "passwordPlaceholder": "Mật khẩu",
+    "emailRequired": "Vui lòng nhập email",
+    "emailInvalid": "Email không hợp lệ",
+    "passwordRequired": "Vui lòng nhập mật khẩu",
+    "showPassword": "Hiện mật khẩu",
+    "hidePassword": "Ẩn mật khẩu",
+    "googleSignIn": "Đăng nhập bằng Google",
+    "microsoftSignIn": "Đăng nhập bằng Microsoft",
+    "footer": "© 2025 Học Tiếp. All rights reserved."
 }

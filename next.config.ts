@@ -7,13 +7,6 @@ const nextConfig: NextConfig = {
   },
   // output: "standalone",
 
-  // Cấu hình đa ngôn ngữ
-  i18n: {
-    locales: ['vi', 'en'],
-    defaultLocale: 'vi',
-    localeDetection: false, // Không tự đổi URL theo trình duyệt
-  },
-
 };
 
 export default nextConfig;

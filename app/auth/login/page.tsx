@@ -1,4 +1,3 @@
-// src/app/login/page.tsx
 "use client";
 
 import { signIn } from "next-auth/react";
@@ -12,33 +11,37 @@ import LanguageSwitch from "@/components/language-switch";
 
 export default function LoginPage() {
     return (
-        <div className="grid min-h-svh lg:grid-cols-2">
-            <div className="flex flex-col gap-4 p-6 md:p-10">
-                <div className="flex justify-center gap-2 md:justify-start">
-                    <a href="#" className="flex items-center gap-2 font-medium">
-                        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
-                            <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-full border">
-                                {/* <activeTeam.logo className="size-4" /> */}
-                                <Image src={LogoLMS as StaticImageData} alt="Logo-LMS" className="size-8" />
-                            </div>
-                        </div>
-                        Trợ giảng AI
-                    </a>
-                </div>
-                <div className="flex flex-1 items-center justify-center">
-                    <div className="w-full max-w-xs">
-                        <LoginForm />
-                    </div>
-                </div>
-            </div>
-            <div className="relative hidden bg-muted lg:block">
+        <div className="relative min-h-svh">
+            {/* Background full screen */}
+            <div className="absolute inset-0">
                 <Image
                     src={Background}
-                    alt="Image"
-                    className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+                    alt="Background"
+                    className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
                 />
             </div>
-            <div className="absolute bottom-4 left-4 z-10 flex items-center gap-2">
+            
+            {/* Logo positioned at top */}
+            <div className="absolute top-6 left-6 z-20 md:top-10 md:left-10">
+                <a href="#" className="flex items-center gap-2 font-medium text-white">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
+                        <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-full border">
+                            <Image src={LogoLMS as StaticImageData} alt="Logo-LMS" className="size-8" />
+                        </div>
+                    </div>
+                    Trợ giảng AI
+                </a>
+            </div>
+
+            {/* Login form centered */}
+            <div className="absolute inset-0 z-10 flex items-center justify-center">
+                <div className="w-full max-w-xs bg-white/95 backdrop-blur-sm rounded-lg p-6 shadow-lg">
+                    <LoginForm />
+                </div>
+            </div>
+
+            {/* Language switch at bottom */}
+            <div className="absolute bottom-4 left-4 z-20 flex items-center gap-2">
                 <LanguageSwitch />
             </div>
         </div>
